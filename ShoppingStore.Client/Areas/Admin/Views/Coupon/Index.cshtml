@@ -1,0 +1,146 @@
+﻿@model CouponForCreationDto
+@{
+    ViewData["title"] = "Create Coupon";
+}
+
+<style>
+    table colgroup col:nth-child(6) {
+        width: 102px !important;
+    }
+</style>
+
+<h4>Create Coupon</h4>
+<div class="col-md-9" style="margin-bottom: 40px">
+    <form asp-action="Create" asp-controller="Coupon" autocomplete="off" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger" />
+        </div>
+        @*         <div class="form-group">
+        <label>Price</label>
+        <input asp-for="Price" min="1" type="number" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger" />
+        </div> *@
+        <div class="form-group">
+            <label>Quantity</label>
+            <input asp-for="Quantity" min="1" type="number" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Date Start</label>
+            <input asp-for="DateStart" class="form-control" />
+            <span asp-validation-for="DateStart" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Date Expired</label>
+            <input asp-for="DateExpired" class="form-control" />
+            <span asp-validation-for="DateExpired" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <select asp-for="Status" class="form-control">
+                <option value="1">Show</option>
+                <option value="0">Hidden</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Create</button>
+        </div>
+    </form>
+
+    <h5>List Coupon</h5>
+    <table class="table table-striped" id="myCouponTable">
+        <thead>
+            <tr>
+                <th>Updated Time</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Date Started</th>
+                <th>Date Expired</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Valid Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var coupon in ViewBag.Coupons as IEnumerable<CouponDto>)
+            {
+                <tr>
+                    <td>@coupon.UpdatedDate</td>
+                    <td>@coupon.Name</td>
+                    <td>@coupon.Description</td>
+                    <td>@coupon.DateStart.ToString("dd-MM-yyyy")</td>
+                    <td>@coupon.DateExpired.ToString("dd-MM-yyyy")</td>
+                    <td>@coupon.Quantity</td>
+                    <td>
+                        @(coupon.Status == 1 ? "Active" : "Hidden")
+                        @*                         <select name="Status">
+                    <option selected="@(coupon.Status == 1 ? "selected" : false)" value="1">
+                    Active
+                    </option>
+                    <option selected="@(coupon.Status == 0 ? "selected" : false)" value="0">
+                    Hidden
+                    </option>
+                    </select> *@
+                    </td>
+                    <td>
+                        @if (coupon.DateExpired < DateTime.Now)
+                        {
+                            <span class="text text-danger">Expired</span>
+                        }
+                        else
+                        {
+                            TimeSpan remainingTime = coupon.DateExpired - DateTime.Now;
+                            int daysRemaining = remainingTime.Days;
+                            @if (daysRemaining == 0)
+                            {
+                                <span class="text text-danger">Today</span>
+                            }
+                            else
+                            {
+                                <span class="text text-success">@daysRemaining @(daysRemaining > 1 ? "days" : "day") left</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-controller="Coupon" asp-route-id="@coupon.Id">Edit</a>
+                        <a class="btn btn-danger btn-sm confirmDeletion" asp-action="Delete" asp-controller="Coupon" asp-route-id="@coupon.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @* <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('Description');
+    </script> *@
+
+    <script>
+        new DataTable('#myCouponTable', {
+            order: [[0, 'desc']],
+            layout: {
+                top0Start: {
+                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                }
+            }
+        });
+    </script>
+}
+
+

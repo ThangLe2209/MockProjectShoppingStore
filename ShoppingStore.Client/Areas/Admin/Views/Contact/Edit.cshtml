@@ -1,0 +1,81 @@
+﻿@model ContactForEditDto
+@inject IConfiguration Configuration
+@{
+    var backendApiLogoPath = Configuration.GetValue<string>("ShoppingStoreAPILogoPath");
+    ViewData["title"] = "Edit Contact";
+}
+
+<h4>Edit Contact</h4>
+<div class="col-md-9" style="margin-bottom: 40px">
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Map</label>
+            <input asp-for="Map" class="form-control" />
+            <span asp-validation-for="Map" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Phone</label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label>Logo Image Url</label>
+            <input asp-for="ImageUrl" class="form-control" />
+            <span asp-validation-for="ImageUrl" class="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label>Logo Image Upload</label>
+            <input asp-for="ImageUpload" class="form-control" onchange="ImgPre(this)" />
+            <span asp-validation-for="ImageUpload" class="text-danger"></span>
+            @* <img id="ImgPreview" src="@(Model.Image)" onerror="this.src='@(Model.Image!="noimage.jpg"?backendApiSliderPath + Model.Image: backendApiSliderPath + "noimage.jpg")';this.onerror=null;" alt="" width="120" /> *@
+            <img id="ImgPreview" src="@(backendApiLogoPath + Model.LogoImg)" onerror="this.src='@(Model.LogoImg!="noimage.jpg"?Model.LogoImg: backendApiLogoPath + "noimage.jpg")';this.onerror=null;" alt="" width="120" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Update</button>
+        </div>
+    </form>
+    <a asp-action="Index">Back to List Contact</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @* <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('Description');
+    </script> *@
+
+    <script>
+        function ImgPre(input) {
+            if (input.files[0]) {
+                var uploadimg = new FileReader();
+                uploadimg.onload = function (displayimg) {
+                    $("#ImgPreview").attr('src', displayimg.target.result);
+                }
+                uploadimg.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
+
+

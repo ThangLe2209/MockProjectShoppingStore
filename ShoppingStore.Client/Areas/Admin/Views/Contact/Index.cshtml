@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ContactDto>
+@inject IConfiguration Configuration
+@{
+    var backendApiLogoPath = Configuration.GetValue<string>("ShoppingStoreAPILogoPath");
+    ViewData["title"] = "Contact Listed";
+}
+<h3>List Contact</h3>
+@if (Model.Count() == 0)
+{
+<a asp-action="Create" asp-controller="Contact">Add Contact</a>
+}
+<table class="table" id="myTable">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Contact Name</th>
+            <th scope="col">Contact Map</th>
+            <th scope="col">Contact Email</th>
+            <th scope="col">Contact Phone</th>
+            <th scope="col">Contact Description</th>
+            <th scope="col">Contact LogoImage</th>
+            @* <th scope="col">Created Date</th> *@
+            @* <th scope="col">Updated Date</th> *@
+            <th scope="col">Contact Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@item.Id</th>
+                <td>@item.Name</td>
+                <td>@Html.Raw(@item.Map)</td>
+                <td>@Html.Raw(@item.Email)</td>
+                <td>@Html.Raw(@item.Phone)</td>
+                <td>
+                    <span style="display: -webkit-box;-webkit-line-clamp: 8;-webkit-box-orient: vertical;overflow: hidden;">@Html.Raw(item.Description)</span>
+                </td>
+                @* <td><img src="@(item.Image)" onerror="this.src='@(item.Image!="noimage.jpg"?backendApiSliderPath + item.Image: backendApiSliderPath + "noimage.jpg")';this.onerror=null;" width="120" /></td> *@
+                <td><img src="@(backendApiLogoPath + item.LogoImg)" onerror="this.src='@(item.LogoImg!="noimage.jpg"? item.LogoImg: backendApiLogoPath + "noimage.jpg")';this.onerror=null;" width="120" /></td>
+                @* <td>@item.CreatedDate</td> *@
+                @* <td>@item.UpdatedDate</td> *@
+                <td>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-controller="Contact" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-danger btn-sm confirmDeletion" asp-action="Delete" asp-controller="Contact" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

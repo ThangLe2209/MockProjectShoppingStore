@@ -1,0 +1,516 @@
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@inject IConfiguration Configuration
+@using ShoppingStore.Client.Models.ViewModels
+@model CartItemViewModel
+
+@{
+    var backendApiImagePath = Configuration.GetValue<string>("ShoppingStoreAPIImagePath");
+    var tempDataTinh = @ViewBag.TempDataTinh ?? "";
+}
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<style>
+    .wislist-name-column a {
+        color: unset !important;
+    }
+
+    .wislist-name-column:hover {
+        cursor: pointer;
+        color: #FE980F;
+    }
+
+    /*     tr:last-child td.cart_product {
+                                                    margin: 0 !important;
+                                                    padding-left: 34px !important;
+                                                } */
+
+    table > colgroup > col:nth-child(3) {
+        width: 100.2875px !important;
+    }
+</style>
+
+<section id="cart_items">
+    <div class="container">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li class="active">Shopping Cart</li>
+            </ol>
+        </div>
+        <div class="table-responsive cart_info">
+            <table class="table table-condensed" id="@(Model.CartItems.Count > 0?"myCartTable":"normalTempTable")">
+                <thead>
+                    <tr class="cart_menu">
+                        <td class="image">Item</td>
+                        <td class="description">Name</td>
+                        <td class="price">Price</td>
+                        <td class="quantity">Quantity</td>
+                        <td class="total">Total</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.CartItems.Count > 0)
+                    {
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr>
+                                <td class="cart_product">
+                                    <a asp-action="Details" asp-controller="Product" asp-route-id="@item.ProductId"><img src="@(backendApiImagePath + item.Image)" alt="" width="60px" height="60px"></a>
+                                </td>
+                                @* 								<td class="cart_description">
+                        <h4><a href="">@item.ProductName</a></h4>
+                        </td> *@
+                                <td>
+                                    <div class="wislist-name-column" style="width: 12vw;overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
+                                        <span><a asp-action="Details" asp-controller="Product" asp-route-id="@item.ProductId">@Html.Raw(@item.ProductName)</a></span>
+                                    </div>
+                                </td>
+                                <td class="cart_price">
+                                    <p>@item.Price $</p>
+                                </td>
+                                <td class="cart_quantity">
+                                    <div style="display: flex;">
+                                        <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId"> + </a>
+                                        @* <input class="cart_quantity_input" type="text" name="quantity" value="@item.Quantity" autocomplete="off" size="2" disabled> *@
+                                        <select asp-for="@item.Quantity" class="form-control cart-select-option" asp-items="ViewBag.ArrOptions"
+                                                style="width: 40%;margin: 0 4px;" data-product-id="@item.ProductId"></select>
+                                        <a class="btn btn-success btn-sm" asp-controller="Cart" asp-action="Decrease" asp-route-id="@item.ProductId"> - </a>
+                                        <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId" style="margin: 0 10px;"> Remove </a>
+                                    </div>
+                                </td>
+                                <td class="cart_total">
+                                    <p class="cart_total_price">@Model.CartItems.Where(x => x.ProductId == item.ProductId).Sum(x => x.Quantity * x.Price).ToString() $</p>
+                                </td>
+                            </tr>
+                        }
+                    <tfoot>
+                        <tr rowspan="5">
+                                @* <td colspan="4"> *@
+                            <td>
+                                Grand Total: <p class="cart_total_price cart_grand_total">
+                                    <span class="cart_grand_total_val">@Model.GrandTotal $</span></p> @*ToString("#,##0")*@
+                                <form>
+                                    Coupon Code: <input type="text" class="form-control coupon-value" />
+                                    <span class="text text-success coupon-titile-description">Currently not apply any voucher<br /></span>
+                                    <input type="button" value="Apply" class="btn btn-sm btn-primary btn-apply-coupon" />
+                                </form>
+                                Shipping Cost: <p class="cart_total_price" id="shipping_price_calculation">
+                                        @if (Context.Request.Cookies["ShippingPrice"] == null)
+                                        {
+                                            @Html.Raw($"{@Model.ShippingCost} $") @*ToString("#,##0")*@
+                                            ;
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw($"{Context.Request.Cookies["ShippingPrice"].ToString()} $")
+                                            ;
+                                        }
+                                </p>
+
+                                <p><a asp-action="DeleteShipping" asp-controller="Cart">Recalculate Shipping Cost</a></p>
+                                <input type="hidden" id="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+                            </td>
+                            <td>
+                                <h4>Shipping Info</h4>
+                                    @if ((Context.Request.Cookies["ShippingCity"] == null &&
+                                   Context.Request.Cookies["ShippingDistrict"] == null &&
+                                   Context.Request.Cookies["ShippingWard"] == null))
+                                    {
+                                    <div class="form-group">
+                                        <label>Select</label>
+                                        <select class="css_select" id="tinh" name="tinh" title="Chọn Tỉnh Thành">
+                                            <option value="0">Tỉnh Thành</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Select</label>
+                                        <select class="css_select" id="quan" name="quan" title="Chọn Quận Huyện">
+                                            <option value="0">Quận Huyện</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Select</label>
+                                        <select class="css_select" id="phuong" name="phuong" title="Chọn Phường Xã">
+                                            <option value="0">Phường Xã</option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-primary btn-add-shipping">Calculate Shipping Fee</button>
+                                    }
+                                    else
+                                    {
+
+                                    <div class="form-group">
+                                        <label>City</label>
+                                        <p>@Html.Raw(Context.Request.Cookies["ShippingCity"].ToString().Trim('"'))</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>District</label>
+                                        <p>@Html.Raw(Context.Request.Cookies["ShippingDistrict"].ToString().Trim('"'))</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Ward</label>
+                                        <p>@Html.Raw(Context.Request.Cookies["ShippingWard"].ToString().Trim('"'))</p>
+                                    </div>
+
+
+                                    }
+                                    @*                                     @if (User.Identity.IsAuthenticated)
+                            {
+                            <button type="button" class="btn btn-primary btn-add-shipping">Calculate Shipping Fee</button>
+                            }
+                            else
+                            {
+                            @* <a class="btn btn-primary btn-sm" asp-controller="Cart" asp-action="RedirectPage"> Login here </a>
+                            <a class="btn btn-primary btn-sm" onclick="changeHref()"> Calculate Shipping Fee </a>
+                            } *@
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="d-flex justify-content-center" style="margin-right: 10px">
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                        <a class="btn btn-primary btn-sm checkout-btn" style="margin-top: 0px" asp-controller="Checkout" asp-action="Checkout" onclick="return confirm('Confirm Order ?')"> Checkout COD </a>
+                                        }
+                                        else
+                                        {
+                                        <a class="btn btn-primary btn-sm checkout-btn" style="margin-top: 0px" asp-controller="Checkout" asp-action="Index"> Checkout COD </a>
+                                            @*<a disabled="disabled" class="btn btn-primary btn-sm checkout-btn" style="margin-top: 0px" asp-controller="Checkout" asp-action="Index"> Checkout </a>
+                                <br>
+                                <span class="text text-danger checkout-btn-warning">You need to calculate shipping fee before checkout !</span> *@
+                                        }
+                                    <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Clear"> Clear Cart</a>
+                                        @if (User.Identity.IsAuthenticated) // Momo temp disable - need register to get accessKey and secretKey + do BE(PaymentCallback-CheckoutController.cs, PaymentMomoInfo-Admin OrderController.cs) then test again
+                                        {
+                                            @*                                         <form method="post" asp-action="CreatePaymentMomo" asp-controller="Payment" style="margin-top: 10px">
+                                <input type="hidden" name="FullName" value="@User.Identity.Name" />
+                                <input type="hidden" name="Amount" value="@Model.GrandTotal"/>
+                                <input type="hidden" name="OrderInfo" value="Thanh toán Momo cho đơn hàng tại Shopping Store"/>
+                                <button class="btn btn-danger" name="PayUrl" type="submit">Pay with Momo</button>
+                                </form> *@
+
+                                        <form method="post" asp-action="CreatePaymentUrlVnpay" asp-controller="Payment" style="margin-top: 10px">
+                                            <input type="hidden" name="Name" value="@User.Identity.Name" />
+                                            <input id="Amount_Vnpay" type="hidden" name="Amount" value="@((Model.GrandTotal + (decimal.Parse(Context.Request.Cookies["ShippingPrice"] ?? "0"))) * 22000)" /> @*change to vnd*@
+                                            <input type="hidden" name="OrderDescription" value="Thanh toán Vnpay cho đơn hàng tại Shopping Store, bao gồm coupon, giá ship" />
+                                            <input type="hidden" name="OrderType" value="other" /> @*https://sandbox.vnpayment.vn/apis/docs/loai-hang-hoa/*@
+                                            <button class="btn btn-primary" type="submit">Checkout with Vnpay</button>
+                                        </form>
+                                        <div style="font-size: 10px;font-style: italic;">
+                                            *CouponCode and Shipping Price will be included with Vnpay Payment
+                                        </div>
+                                        }
+
+                                        else
+                                        {
+                                        <div>
+                                            <a class="btn btn-primary" style="margin-top: 10px" asp-controller="Checkout" asp-action="Index"> Checkout with Vnpay </a>
+                                        </div>
+                                        <div style="font-size: 10px;font-style: italic;">
+                                            *CouponCode and Shipping Price will be included with Vnpay Payment
+                                        </div>
+                                        }
+                                </div>
+
+                            </td>
+                        </tr>
+                    </tfoot>
+                    }
+                    else
+                    {
+                    <tr>
+                        <td colspan="5"><h4>Your cart is empty.</h4></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section> <!--/#cart_items-->
+@section Scripts {
+    <script>
+        function changeHref() {
+            var tinh = $("#tinh").find('option:selected').val();
+            var quan = $("#quan").find('option:selected').val();
+            var phuong = $("#phuong").find('option:selected').val();
+
+            var url = '@Url.Action("RedirectPage", "Cart")';
+            window.location.href = url + '?tinh=' + tinh + '&quan=' + quan + '&phuong=' + phuong;
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".form-control.cart-select-option").change(function () {
+                var Id = $(this).attr("data-product-id");
+                // console.log('hi', $(this).val(), Id)
+                // console.log('hi1',Id)
+
+                $.ajax({
+                    type: "Get",
+                    url: "/Cart/ChangeSelectOptions?optionValueChange=" + $(this).val(),
+                    data: { Id: Id },
+                    success: function (result) {
+                        if (result.success) {
+                            window.location.href = result.redirectToUrl;
+                            // Swal.fire(result.message);
+                        }
+                    },
+                    error: function (result) {
+                        window.location.href = result.responseJSON.redirectToUrl;
+                    }
+                });
+
+                //https://stackoverflow.com/questions/66336768/select-onchange-to-controllers-action-in-net-core
+                // $.ajax({
+                // 	type: "Get",
+                // 	url: "/Home/ShowProduct?type=" + $(this).val(),  //remember change the controller to your owns.
+                // 	success: function (data) {
+                // 		$("#productcontainer").html("");
+                // 		$("#productcontainer").html(data);
+                // 	},
+                // 	error: function (response) {
+                // 		console.log(response.responseText);
+                // 	}
+                // });
+            });
+        })
+    </script>
+
+    <script>
+        // var buttonCommon = {
+        //     exportOptions: {
+        //         format: {
+        //             body: function (data, row, column, node) {
+        //                 // if it is select
+        //                     console.log({
+        //                         data,
+        //                         row,
+        //                         column,
+        //                         node
+        //                     })
+        //                 //https://stackoverflow.com/questions/34329997/export-data-from-datatable-with-select-element-exports-each-option-from-the-sele
+        //                 // if (data.includes("<select")) {
+        //                 //     // console.log({
+        //                 //     //     data,
+        //                 //     //     row,
+        //                 //     //     column,
+        //                 //     //     node
+        //                 //     // })
+        //                 //     return @ViewBag.orderStatus == 0 ? "Already Done" : "New Order"
+        //                 //     // return $(data).find("option:selected").text()
+        //                 // }
+        //                 return data
+        //             }
+        //         }
+        //     }
+        // };
+        new DataTable('#myCartTable', {
+            // order: [[0, 'desc']],
+            layout: {
+                topStart: {
+                    pageLength: {
+                        menu: [1, 5, 10, 25, 50, 100]
+                    }
+                },
+                // top1Start: {
+                //     buttons: ['copy', $.extend(true, {}, buttonCommon, {
+                //         extend: "csv"
+                //     }), $.extend(true, {}, buttonCommon, {
+                //         extend: "excel"
+                //     }), $.extend(true, {}, buttonCommon, {
+                //         extend: "pdf"
+                //     }), $.extend(true, {}, buttonCommon, {
+                //         extend: "print"
+                //     })]
+                // },
+                bottomStart: 'info', // can set = null
+                bottom: 'paging',
+                bottomEnd: null
+            },
+            pageLength: 5
+        });
+    </script>
+    <script>
+        $(".coupon-value").keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('.btn-apply-coupon').trigger('click');
+                e.preventDefault();
+            }
+        });
+
+        $(".btn-apply-coupon").click(function () {
+            var coupon_value = $(".coupon-value").val();
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetCoupon", "Cart")",
+                data: { coupon_value: coupon_value, grandTotal: @Model.GrandTotal, __RequestVerificationToken: $('#RequestVerificationToken').val() },
+                success: function (result) {
+                    if (result.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: result.message
+                        });
+                        $(".coupon-titile-description").html(`${result.couponTitle}<br/>`);
+                        // $(".coupon-titile-description").addClass("text-success").html(`${result.couponTitle}<br/>`);
+                        // window.location.href = window.location.href;
+
+                        $("#Amount_Vnpay").val(`${result.newGrandTotalWithShippingPrice * 22000}.00`);
+
+                        $(".cart_grand_total").html(`
+                                <span class="text text-danger" style="text-decoration: line-through;">@Model.GrandTotal $</span>
+                                <span class="text text-success cart_grand_total_val">${result.newGrandTotal}.00 $</span>
+                        `);
+                    }
+                },
+                error: function (result) {
+                    // console.log(result);
+                    Swal.fire({
+                        icon: "error",
+                        title: result.responseText
+                    });
+                    $(".coupon-value").val("");
+                    return;
+                }
+            })
+        });
+    </script>
+    <script>
+        $(".btn-add-shipping").click(function () {
+            var tinh = $("#tinh").find('option:selected').text();
+            var quan = $("#quan").find('option:selected').text();
+            var phuong = $("#phuong").find('option:selected').text();
+
+            if (tinh == 'Tỉnh Thành' || quan == 'Quận Huyện' || phuong == 'Phường Xã') {
+                Swal.fire({
+                    icon: "error",
+                    title: "Fill all information!"
+                });
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    // url: "@Url.//Action("StoreShipping", "Shipping", new { area = "Admin" })",
+                    url: "@Url.Action("GetShipping", "Cart")",
+                    data: { tinh: tinh, quan: quan, phuong: phuong, __RequestVerificationToken: $('#RequestVerificationToken').val() },
+                    success: function (result) {
+                        // window.location.href = window.location.href;
+                        if (result.success) {
+                            // alert(result.shippingPrice);
+                            $("#shipping_price_calculation").html(`${result.shippingPrice} $`);
+                            // $(".checkout-btn").attr("disabled", false);
+                            // $(".checkout-btn-warning").remove();
+
+                            // var currentGrandTotal = parseFloat($("#Amount_Vnpay").val()) ?? 0;
+                            var currentGrandTotal = parseFloat($(".cart_grand_total_val").text().replace(" $", "")); // already apply coupon also if have
+                            var newGrandTotal = (currentGrandTotal + result.shippingPrice) * 22000
+                            // alert(typeof newGrandTotal)
+                            // alert(newGrandTotal)
+                            $("#Amount_Vnpay").val(`${newGrandTotal}.00`);
+                        }
+                    },
+                    error: function (result) {
+                        // if (result.responseJSON.isDuplicate) {
+                        //     // Swal.fire(result.responseJSON.message);
+                        //     Swal.fire({
+                        //         icon: "error",
+                        //         title: result.responseJSON.message
+                        //     });
+                        //     return;
+                        // }
+                        window.location.href = window.location.href;
+                    }
+                })
+            }
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            //Lấy tỉnh thành
+            $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
+                if (data_tinh.error == 0) {
+                    $.each(data_tinh.data, function (key_tinh, val_tinh) {
+                        $("#tinh").append('<option value="' + val_tinh.id + '">' + val_tinh.full_name + '</option>');
+                    });
+
+                    $("#tinh").change(function (e) {
+                        var idtinh = $(this).val();
+                        //Lấy quận huyện
+                        $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
+                            if (data_quan.error == 0) {
+                                $("#quan").html('<option value="0">Quận Huyện</option>');
+                                $("#phuong").html('<option value="0">Phường Xã</option>');
+                                $.each(data_quan.data, function (key_quan, val_quan) {
+                                    $("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
+                                });
+                                //Lấy phường xã
+                                $("#quan").change(function (e) {
+                                    var idquan = $(this).val();
+                                    $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
+                                        if (data_phuong.error == 0) {
+                                            $("#phuong").html('<option value="0">Phường Xã</option>');
+                                            $.each(data_phuong.data, function (key_phuong, val_phuong) {
+                                                $("#phuong").append('<option value="' + val_phuong.id + '">' + val_phuong.full_name + '</option>');
+                                            });
+                                        }
+                                    }).done(function () {
+                                    });
+                                });
+                            }
+                        }).done(function () {
+                            // console.log("third success");
+                            // function handleTempQuan(tempQuan) {
+                            //     console.log({ tempQuan }, typeof (tempQuan));
+                            //     if (typeof (tempQuan) != "undefined" && tempQuan != 0) {
+                            //         var stringData = String(tempQuan);
+                            //         console.log(stringData, typeof (stringData));
+                            //         $("#quan").val(stringData).trigger('change');
+                            //     }
+                            // };
+                            // handleTempQuan(@ViewBag.TempDataQuan);
+                        });
+                    });
+                }
+            }).done(function () {
+                // console.log("second success");
+                // function handleTempTinh(tempTinh) {
+                //     console.log({ tempTinh }, typeof (tempTinh));
+                //     if (typeof(tempTinh) != "undefined" && tempTinh != 0) {
+                //         var stringData = String(tempTinh);
+                //         console.log(stringData, typeof (stringData));
+                //         $("#tinh").val(stringData).trigger('change');
+                //     }
+                // };
+                // handleTempTinh(@ViewBag.TempDataTinh);
+            });
+        });
+    </script>
+    @*     <script>
+        // function handleTempTinh(tempTinh = 0) {
+        //     if (tempTinh != 0) {
+        //         $("#tinh").val(tempTinh);
+        //     }
+        // }
+        // function handleTempQuan(tempQuan = 0) {
+        //     if (tempQuan != 0) {
+        //         $("#quan").val(tempQuan);
+        //     }
+        // }
+        // function handleTempPhuong(tempPhuong = 0) {
+        //     if (tempPhuong != 0) {
+        //         $("#phuong").val(tempPhuong);
+        //     }
+        // }
+        // $(document).ready(function () {
+        //     // handleTempTinh(@ViewBag.TempDataTinh);
+        //     // handleTempQuan(@ViewBag.TempDataQuan);
+        //     // handleTempPhuong(@ViewBag.TempDataPhuong);
+        // })
+    </script> *@
+}

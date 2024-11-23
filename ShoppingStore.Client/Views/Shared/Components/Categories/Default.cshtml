@@ -1,0 +1,58 @@
+﻿@model IEnumerable<CategoryDto>
+
+<style>
+    .categories-menunav {
+        position: relative;
+    }
+
+    .categories-navigate {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        cursor: default;
+    }
+
+    .categories-navigate span {
+        padding: 0 2px;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 300ms;
+    }
+
+    .categories-navigate span:hover {
+        color: #fdb45e;
+    }
+</style>
+
+@foreach (var item in Model)
+{
+    <div class="panel panel-default categories-menunav">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <a asp-action="Index" asp-controller="Category" asp-route-slug="@item.Slug" asp-route-pageNumber="1">
+                    @if (@ViewBag.slugQueryString == @item.Slug?.ToLower())
+                    {
+                        <span style="color: #FE980F;">@item.Name</span>
+                    }
+                    else
+                    {
+                        <span>@item.Name</span>
+                    }
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+@if (@ViewBag.Pager.TotalPageCount > 1)
+{
+    @*get 4 brand each page and decrease by brand popular (count by order -> product -> brand)*@
+    <div class="categories-navigate">
+        <span onclick="HandleNextCategoryMenu(@ViewBag.categoryMenuId - 1, @ViewBag.Pager.TotalPageCount, '@ViewBag.slugQueryString')">@Html.Raw("<")</span>
+        <span onclick="HandleNextCategoryMenu(@ViewBag.categoryMenuId + 1, @ViewBag.Pager.TotalPageCount, '@ViewBag.slugQueryString')">@Html.Raw(">")</span>
+    </div>
+}
+
+<script type="text/javascript" src="~/js/BrandAndCategoryHandleNextPage.js" defer></script>
+
+@* Handle script in ViewComponent/Partial View Razor Page: https://stackoverflow.com/questions/43114200/where-should-i-include-a-script-for-a-view-component *@

@@ -1,0 +1,46 @@
+using Thang.IDP.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace Thang.IDP.Pages.User.Activation
+{
+    [SecurityHeaders]
+    [AllowAnonymous]
+    public class IndexModel : PageModel
+    {
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        private readonly ILocalUserService _localUserService;
+
+        public IndexModel(ILocalUserService localUserService)
+        {
+            _localUserService = localUserService ??
+                throw new ArgumentNullException(nameof(localUserService));
+        }
+
+        public async Task<IActionResult> OnGet(string ReturnUrl, string securityCode)
+        {
+            Input = new InputModel();
+            ViewData["ReturnUrl"] = ReturnUrl;
+
+            if (await _localUserService.ActivateUserAsync(securityCode))
+            {
+                Input.Message = "Your account was successfully activated.  " +
+                    "Navigate to your client application to log in.";
+            }
+            else
+            {
+                Input.Message = "Your account couldn't be activated, " +
+                    "please contact your administrator.";
+            }
+
+            await _localUserService.SaveChangesAsync();
+
+            return Page();
+        }
+
+
+    }
+}

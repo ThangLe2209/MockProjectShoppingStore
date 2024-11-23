@@ -1,0 +1,101 @@
+﻿@model IEnumerable<OrderDetailDto>
+@{
+    ViewData["title"] = "Order Details";
+    decimal total = 0;
+    decimal subtotal = 0;
+}
+@* <h3>List Order</h3> *@
+
+<style>
+    table > colgroup col:nth-child(6) {
+        width: 150px !important
+    }
+</style>
+
+<table class="table" id="detail_order">
+    <thead>
+        <tr>
+            @* <th scope="col">#</th> *@
+            <th scope="col">Order Code</th>
+            <th scope="col">Username</th>
+            <th scope="col">Order Name</th>
+            <th scope="col">Order Price</th>
+            <th scope="col">Order Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            subtotal = item.Quantity * item.Price; // so luong * gia
+            total += subtotal;
+            <tr>
+                <input type="hidden" asp-for="@item.OrderCode" class="getId"/>
+                @* <th scope="row">@item.Id</th> *@
+                <td>@item.OrderCode</td>
+                <td>@item.UserName</td>
+                <td>@item.Product.Name</td>
+                <td>@item.Price $</td>
+                <td>@item.Quantity</td>
+
+            </tr>
+        }
+        <tr>
+            @* <td colspan="3"></td> *@
+            <th scope="row"></th>
+            <td></td>
+            <td></td>
+            <td scope="row">
+                <span><span style="font-weight: bold">Shipping Cost:</span> @ViewBag.ShippingCost $</span>
+            </td>
+            <td>
+                <span><span style="font-weight: bold">Total(Included Shipping Cost - Not applying Coupon):</span><br /> @(@total + ViewBag.ShippingCost) $ </span>
+            </td>
+            <td></td>
+
+        </tr>
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        var buttonCommon = {
+            exportOptions: {
+                format: {
+                    body: function (data, row, column, node) {
+                        // if it is select
+                        //https://stackoverflow.com/questions/34329997/export-data-from-datatable-with-select-element-exports-each-option-from-the-sele
+                        if (data.includes("<select")) {
+                            // console.log({
+                            //     data,
+                            //     row,
+                            //     column,
+                            //     node
+                            // })
+                            return @ViewBag.orderStatus == 0 ? "Already Done" : "New Order"
+                            // return $(data).find("option:selected").text()
+                        }
+                        return data
+                    }
+                }
+            }
+        };
+        new DataTable('#detail_order', {
+            // https://datatables.net/forums/discussion/49798/remove-default-sorting-of-first-column
+            // https://stackoverflow.com/questions/12124746/disable-automatic-sorting-on-the-first-column-when-using-jquery-datatables
+            order: [],
+            layout: {
+                top0Start: {
+                    buttons: ['copy', $.extend(true, {}, buttonCommon, {
+                        extend: "csv"
+                    }), $.extend(true, {}, buttonCommon, {
+                        extend: "excel"
+                    }), $.extend(true, {}, buttonCommon, {
+                        extend: "pdf"
+                    }), $.extend(true, {}, buttonCommon, {
+                        extend: "print"
+                    })]
+                }
+            }
+        });
+    </script>
+}
