@@ -58,7 +58,7 @@ Client: https://thang1clientdeploy-1-0.onrender.com/
 ```
 - appsettings.json(Client FE Project)
 ```
-# Your IDP and API deployment URL, Cloudinary URL
+# Your URL path, Vnpay infor
   "ShoppingStoreAPIRoot": "https://localhost:7045/",
   "IDPServerRoot": "https://localhost:5001/",
   "ShoppingStoreAPIImagePathBase": "https://localhost:7045/media/",
@@ -77,4 +77,4 @@ Client: https://thang1clientdeploy-1-0.onrender.com/
   },
   "TimeZoneId": "SE Asia Standard Time" // GMT+7. If do not us Windows OS change it to: Asia/Bangkok
 ```
-- Add migration and update Database for BE,IDP.
+- Add migration and update Database for BE,IDP. (If any changes)
