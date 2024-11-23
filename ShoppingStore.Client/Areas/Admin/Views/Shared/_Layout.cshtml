@@ -1,0 +1,176 @@
+﻿@{
+	ViewData["title"] = "Admin CMS";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<title>@ViewData["title"] - Admin Areas</title>
+	<link href="~/css/bootstrap.min.css" rel="stylesheet">
+	<link href="~/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//cdn.datatables.net/2.1.4/css/dataTables.dataTables.min.css" rel="stylesheet">
+	<link href="https://cdn.datatables.net/buttons/3.1.2/css/buttons.dataTables.css" rel="stylesheet">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+	<link href="~/css/prettyPhoto.css" rel="stylesheet">
+	<link href="~/css/price-range.css" rel="stylesheet">
+	<link href="~/css/animate.css" rel="stylesheet">
+	<link href="~/css/main.css" rel="stylesheet">
+	<link href="~/css/responsive.css" rel="stylesheet">
+	<!--[if lt IE 9]>
+	<script src="js/html5shiv.js"></script>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+	<link rel="shortcut icon" href="~/images/ico/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="~/images/ico/apple-touch-icon-144-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="~/images/ico/apple-touch-icon-114-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="~/images/ico/apple-touch-icon-72-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" href="~/images/ico/apple-touch-icon-57-precomposed.png">
+</head><!--/head-->
+<body>
+	<header id="header">
+		<!--header-->
+		<div class="header_top">
+			<!--header_top-->
+			<div class="container">
+				<div class="row">
+					
+				</div>
+			</div>
+		</div><!--/header_top-->
+
+		<div class="header-middle">
+			<!--header-middle-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="logo pull-left">
+							<a href="index.html"><img src="~/images/home/logo.png" alt="" /></a>
+						</div>
+						<div class="btn-group pull-right">
+					
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div><!--/header-middle-->
+
+		<div class="header-bottom">
+			<!--header-bottom-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+						</div>
+						<div class="mainmenu pull-left">
+							<ul class="nav navbar-nav collapse navbar-collapse">
+								<li data-navigate=""><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+								<li data-navigate="/Admin"><a asp-action="Index" asp-controller="Product" asp-area="Admin" class="@(ViewBag.Class=="/Admin"?"active":"")">Products</a></li>
+								<li data-navigate="/Admin/Dashboard"><a asp-action="Index" asp-controller="Dashboard" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Dashboard"?"active":"")">Dashboard</a></li>
+								<li data-navigate="/Admin/Slider"><a asp-action="Index" asp-controller="Slider" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Slider"?"active":"")">Sliders</a></li>
+								<li data-navigate="/Admin/Shipping"><a asp-action="Index" asp-controller="Shipping" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Shipping"?"active":"")">Shippings</a></li>
+								<li data-navigate="/Admin/Coupon"><a asp-action="Index" asp-controller="Coupon" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Coupon"?"active":"")">Coupons</a></li>
+								<li data-navigate="/Admin/Brand"><a asp-action="Index" asp-controller="Brand" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Brand"?"active":"")">Brands</a></li>
+								<li data-navigate="/Admin/Category"><a asp-action="Index" asp-controller="Category" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Category"?"active":"")">Categories</a></li>
+								<li data-navigate="/Admin/Order"><a id="admin-orders-tag" asp-action="Index" asp-controller="Order" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Order"?"active":"")">Orders</a></li>
+								<li data-navigate="/Admin/User"><a asp-action="Index" asp-controller="User" asp-area="Admin" class="@(ViewBag.Class=="/Admin/User"?"active":"")">Users</a></li>
+								<li data-navigate="/Admin/Role"><a asp-action="Index" asp-controller="Role" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Role"?"active":"")">Roles</a></li>
+								<li data-navigate="/Admin/Contact"><a asp-action="Index" asp-controller="Contact" asp-area="Admin" class="@(ViewBag.Class=="/Admin/Contact"?"active":"")">Contacts</a></li>
+							</ul>
+						</div>
+					</div>
+@* 					<div class="col-sm-3">
+						<div class="search_box pull-right">
+							<input type="text" placeholder="Search" />
+						</div>
+					</div> *@
+				</div>
+			</div>
+		</div><!--/header-bottom-->
+	</header><!--/header-->
+
+	<section>
+		<div class="container">
+			<div class="row">
+				<partial name="_NotificationPartial" />
+				@RenderBody()
+			</div>
+		</div>
+	</section>
+
+	<footer id="footer">
+		<!--Footer-->
+	</footer><!--/Footer-->
+	
+
+
+	<script src="~/js/jquery.js"></script>
+	<script src="~/js/bootstrap.min.js"></script>
+	<script src="~/js/jquery.scrollUp.min.js"></script>
+	<script src="~/js/price-range.js"></script>
+	<script src="~/js/jquery.prettyPhoto.js"></script>
+	<script src="//cdn.datatables.net/2.1.4/js/dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.dataTables.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.html5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.print.min.js"></script>
+	<script src="~/js/main.js"></script>
+	<script src="~/backend/js/site.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
+	<script>
+		$(function () {
+			// var message = '@TempData["success"]';
+			// if (message != '') {
+			// 	Swal.fire(message);
+			// }
+			// var message1 = '@TempData["error"]';
+			// if (message1 != '') {
+			// 	Swal.fire({
+			// 		icon: "error",
+			// 		title: message
+			// 	});
+			// }
+		});
+	</script>
+	<script>
+		let table = new DataTable('#myTable', {
+			layout: {
+				top0Start: {
+					buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+				}
+			}
+		});
+		// $(document).ready(function () {
+		// 	var element1 = $('.nav.navbar-nav.collapse.navbar-collapse');
+		// 	for(const item of element1[0].children) {
+		// 		// class="active"
+		// 		console.log(item.children[0])
+		// 		if (item.children[0].classList.contains('active')) item.children[0].classList.remove('active');
+		// 		if (window.location.pathname == item.getAttribute("data-navigate")) item.children[0].classList.add('active');
+		// 	}
+		// })
+	</script>
+
+	<script src="~/js/signalr/dist/browser/signalr.js"></script>
+	<script src="~/js/chat.js"></script>
+	<script>
+		$(document).ready(function () {
+			isSuccessOrder(false)
+		})
+	</script>
+	@await RenderSectionAsync("Scripts", required: false)  @* render script from specific page if only that page has that script tag*@
+</body>
+</html>

@@ -1,0 +1,14 @@
+﻿@using ShoppingStore.Model.Vnpay
+@model PaymentResponseModel
+
+@{
+    ViewData["title"] = "Kết quả thanh toán thành công";
+}
+
+<h5>Vnpay payment success:</h5>
+<h6>OrderId: @Model.OrderId</h6>
+<h6>OrderInfo: @Model.OrderDescription</h6>
+<h6>Payment method: @Model.PaymentMethod</h6>
+<h6>TransactionId: @Model.TransactionId</h6>
+<h6>PaymentId: @Model.PaymentId</h6>
+<h5>View <a asp-controller="Home" asp-action="OrdersHistory">Order History</a></h5>

@@ -1,0 +1,653 @@
+Dto thì navigation properties/collection cũng phải là Dto vì nếu dùng model thì trong navigation properties/collection đó sẽ chứa model của Dto hiện tại gây ra lỗi Maximum cycle
+Model có thể cần Attribute như Required - Not null DB, AutoIncrease, Key, để database xử lí còn Dto thì chỉ xài attribute khi Create/Edit dto thôi Get Dto thì ko cần
+Dto Fe cần field nào thì trả field đó thôi ko cần thừa cẩn thận navigation properties/collection vì ko xài trong Dto Create/Edit mà khi mapping có thể gây ra lỗi ko chú ý.
+
+Bước làm BE
+Model -> nuget package -> tạo Dbcontext -> register service(Program.cs) -> Service(IRepository/Repository) + Program.cs -> Auto mapping(Program.cs,nuget,Mapping folder) -> Controller (Get/Post/Put/Patch/Delete)
+
+Bước làm FE
+wwwroot(css/js/image) -> _Layout.cs -> APIService Get/Post/Put/Patch/Delete(Program.cs,nugget,Service.cs) -> Controller -> View/Route/ControllerAction.cshtml -> ViewComponent/PartialView/Authenticate/Authorize/Session/ViewBag/TempData/ViewData....
+ViewComponent(<vc:Name></vc:Name>) dùng khi muốn xài như Controller có 1 file riêng để nhận service qua contructorInjection rồi trả qua Action InvokeAsysc hoặc Invoke để về View, file View nằm ở Shared/Views/Route/Default.cshtml
+Partial View dùng khi nhận model từ ngoài thằng cha luôn ko có file Controller riêng, file View nằm ở Shared/_FilePartial.cshtml
+TempData để làm Notification(Success,Fail) + Ajax trong wwwroot để 5s tự mất (như kiểu single page react)
+ViewBag để truyền data từ Controller xuống View(ở View có thể có 1 vùng @{//some code} để xử lí)
+ViewData dùng để chỉnh title tab thông qua View của từng admin page.
+
+
+return View()
+return View("~/Views/Checkout/Index.cshtml"); // return to another action
+return RedirectToAction("action") 
+return RedirectToAction("action","page") 
+
+// Đặt dòng này ở _Layout.cshtml rồi ở page nào có những script riêng thì script sẽ chỉ chạy ở page đó thôi (ở page đó cuối file thêm đoạn @script {//some script})
+@await RenderSectionAsync("Scripts", required: false)  @* render script from specific page if only that page has that script tag*@
+
+nếu dùng @model ở View thì nếu có <form> để post data thì có thể dùng asp-for=model.field để set data(ở argument post action trong view là object dto vs nhiều field) còn nếu ko thì dùng name=fieldname để setdata cho 1 field duy nhất thôi(ở argument post action là 1 field vs name đó thôi)
+
+dùng multipart/form-data cho form nếu form đó có upload file
+
+1 Action trong Controller là 1 file cshtml trong View/Controller/Action.cshtml
+
+return Redirect(Request.Headers["Referer"].ToString()); // back to previous page before access this action
+
+View: class="@(ViewBag.Class==true?"nav-link":"")"
+Controller: ViewBag.Class = true;
+
+
+map ở BE thì field null nó cũng map nha cẩn thận chỗ này trừ khi Ignore trong Profile thôi
+Ignore ở đây nghĩa là chỉ ignore lúc map thôi còn field lúc model create/edit thì vẫn nhận vô bình thg. 
+
+hiện tại có 2 cách dùng ajax để render lại:
+1 là pagination thì render đính thêm querystring lên url luôn => sẽ trigger 1 controller action khác auto binding params trong controller action đó luôn(hoặc có thể gọi lại chính controller action đó luôn lúc đầu chưa có thì set default là 1) (pagination home, brand, category, search)
+2 là render lại view component bằng ajax gọi qua 1 action controller và action controller đó sẽ gọi lại view component đó (param sẽ ko lưu trên url querystring mà lưu trong session hoặc local storage rồi đc truyền vào ViewComponent và qua ajax - xem ViewComponent Brand Menu)
+ViewComponent ko có auto binding params trong controller action nha phải truyền param vào thì View Component mới nhận được hoặc dùng Request.QueryString("qsname") để đọc querystring trên url hiện tại
+
+Nếu Controler Action dùng Redirect hoặc RedirectToAction thì ko cần phải tạo file View (cshtml).
+
+View Component thì sẽ ko có dùng @scripts để _Layout đọc như những phải View khác được
+=> dùng thẻ script luôn + defer attribute để script đó chạy sau khi document đã ready và các script khác đã chạy.
+https://stackoverflow.com/questions/43114200/where-should-i-include-a-script-for-a-view-component
+
+có 2 cách để gọi dom event 
+ + dùng onclick={yourFunc()} ngay trong thẻ a,div,... chỗ đó luôn là đc (cách mình làm ở chỗ show Image edit Product Admin)
+ + bắt sự kiện change khi nút đó đc bấm vào (cách a Hiếu làm ở chỗ show Image create Product Admin)
+ 
+muốn backend có claim thì phải ghi thêm nó ở chỗ ApiResources trong file Config.cs của IDP, fe có claim k có nghĩa là Be có claim phải config thêm (dùng Debug mode để check cho rõ nha)
+
+Convention Routing sẽ config trong file Program.cs và đọc từ trên xuống map thằng nào thì nó dừng ở đó luôn.
+có 1 số thứ khá hay như routing(Convention Routing, Attribute Routing), Filter cho Action, TempData sẽ store khi Controler Action RedirectToAction liên tục cho đến khi có 1 Controler Action trả về View xem thêm ở playlist này:
+https://www.youtube.com/playlist?list=PLf5IPckgFwFUdtFXnvNjwgFdflTjKk0gF
+
+có thể dùng tenary operator(toán tử 3 ngôi) cho class css (xem _Layout.cshtml của Admin Area).
+
+có 1 cách để làm related product trong product detail đó là có 1 div< item active> còn mầy div <item> khác mình có thể config để show ra thêm bao nhiêu thằng nữa cũng như học thêm đc về local variable trong razor page (cshtml)
+xem thêm trong productDetail Action.
+
+mặc định khi check valid của edit và create nó sẽ check những field mình ko để dấu ? nên là nếu field nào mình set tay thì để dấu ? vô là đc (có thể dùng Debug mode để check trong controller action đặt 1 biến var a = 10 trước dòng Model.IsValid)
+=> Field nào trong Create/Edit Dto bắt buộc phải nhập thì để required error vô và ko có dấu ?, có dấu ? thì có thể bỏ trống (= null) hoặc set tay hoặc để default value(Image field SliderForCreationDto, lưu ý default value chỉ hoạt động khi mình ko xài field đó trong cshtml file, nếu xài field đó mà để trống ? dù có default value thì trong action vẫn sẽ nhận là null dùng debug để xem)
+xem thêm RatingForCreationDto, CommentProduct action trong ProductController, SliderForCreationDto
+
+lưu id bằng field hidden vs id unique để select dom sau đó dùng field hidden này để gọi ajax (xem thêm Order change status Admin Page)
+
+sqlite ko có auto delete cascade nếu dùng sql server thì sẽ có
+
+
+1 Brand có nhiều Product -> bên ProductModel: chứa FK BrandID + Navigation Model BrandModel, bên BrandModel: chứa Navigation Collection ICollection<ProductModel>
+1 nhiều có nghĩa là(phải xét ở bên bảng nhiều): 1 brandId(khóa ngoại) xuất hiện nhiều dòng bên table ProductModel, nhưng 1 productId(1 dòng) chỉ có 1 brandId
+
+trong efcore: 1 nhiều thì bên bảng 1 chứa ICollection<T> Bảng ít model, bên bảng nhiều thì chứ Foreign key Id + Navigation Property.
+khi làm thì phát hiện ra nếu dùng đầy đủ các navigation property và collection ở các bảng để tận dụng Include linq thì phải cẩn thận maximum loop khi mapping
+bài học rút ra: bên ProductDto của bảng nhiều(Product) Navigation property của Brand phải ko được chứa ICollection<ProductDto> còn bên BrandDto có thể dùng bình thường (xem BrandDto và ProductDto mock proj shopping store)
+
+
+1-1 ở case nhiều bảng: lấy khóa chính ở bảng cha làm khóa ngoại ở bảng con và bảng con đó chỉ có 1 hàng duy nhất chứa khóa ngoại đó thôi => khóa ngoại ko đc xuất hiện nhiều lần ở bảng con nếu khóa ngoại xuất hiện nhiều lần vậy thì nó thành 1 nhiều ở trên rồi
+1-1 ở case 1 bảng đơn giản chỉ là 1 cột thôi và dữ liệu trên cột đó khác nhau ở từng dòng
+
+nhiều-nhiều thì tạo bảng riêng chứa khóa chính của 2 bảng.
+
+dùng mấy dòng dưới để migrate(add-migration, update-database) tạo cấu trúc các bảng cho sql server sau đó dùng thằng DB Browser for SQLite để lấy mấy dòng Insert into.
+<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+builder.Services.AddDbContext<ShoppingStoreContext123>(options =>
+{
+    options.UseSqlServer(
+        builder.Configuration["Data Source=*******;Initial Catalog=*******;User ID=sa;Password=******;Trust Server Certificate=True"]);
+});
+add-migration InitTestDb -Context ShoppingStoreContext123 -OutputDir Migrations\ShoppingStoreTest123Migrations
+update-database -Context ShoppingStoreContext123
+remove-migration -Context ShoppingStoreContext123 (delete the lastest migration)
+
+add-migration AddSliderModel -Context ShoppingStoreContext -OutputDir Migrations\ShoppingStoreMigrations
+
+
+khi Order By desc trong row_number windows function sql thì thứ tự dòng trong bảng cũng thay đổi (same as Order By sau Where clause)
+
+
+sau khi đã tính được totalBrandQuantity by Order Detais có thể dùng join để thêm 1 cột totalBrandQuantity vô bảng BrandModel luôn sau đó thì mỗi lần User mua 1 món thì truy 
+vấn đến bảng Brand + 1 cho cột totalBrandQuantity là xong rồi tính toán để lấy ra 5 thg bán chạy nhất trên bảng Brand đó luôn ko cần join tùm lum qua OrderDetails vs Product nữa.
+
+https://www.entityframeworktutorial.net/faq/set-created-and-modified-date-in-efcore.aspx: auto add createdDate - updateDate column for Db
+https://github.com/dotnet/efcore/issues/18943
+don't use auto generate Id when seed data, u specific id instead => if use when add migration will apprear new update for seed data (don't right).
+
+? mean that data can = null(Ex: Description field in Product table can be inputted or not) => must handle case in api if data = null.
+https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types
+
+
+
+Dto muốn chứa gì cũng đc hết ko bắt buộc phải giống modal Entity
+trừ Create/Edit Dto cần properties gì thì lưu properties đó (ko cần Id property vì khi mapping ở BE saveChanges Id sẽ tự generate)
+ví dụ D:\homecode\trainningmyself\pluralsight\ASP.NET Core Web API Fundamentals\CityInfo\CityInfo.API\Models\CityDto
+
+	public class CityDto
+	{
+		public int Id { get; set; }
+		public string Name { get; set; } = string.Empty;
+		public string? Description { get; set; }
+
+		public int NumberOfPointsOfInterest // Property này tự thêm nè (có thể apply chỗ count brand by order trong mock proj asp.net core của mình)
+		{
+			get
+			{
+				return PointsOfInterest.Count;
+			}
+		}
+		public ICollection<PointOfInterestDto> PointsOfInterest { get; set; }
+			= new List<PointOfInterestDto>();
+	}
+	
+
+
+dùng throw new Exception(errorMessage) ở Repository r try catch ở Action Controller Api bên ngoài là đc nếu muốn trả về Error
+Function trong Repository trả về kiểu int(ví dụ) hay gì đi chăng nữa thì gặp dòng throw new Exception thì ko cần return int nữa 
+
+
+return await _context.Sliders.OrderByDescending(s => s.Id).ThenByDescending(s => s.UpdatedDate).ToListAsync();
+Luôn ưu tiên Order by trước rồi mới đền then by, mặc dù then by có thể ko đúng(UpdatedDate desc trên ví dụ trên) nhưng OrderBy sẽ luôn đúng.
+
+https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/09/Ayaka.jpg
+https://sm.ign.com/ign_br/screenshot/default/kamisato-ayaka_xta5.jpg
+https://mega.com.vn/media/news/1640_doi_hinh_ayaka_dong_bang.jpg
+https://rare-gallery.com/mocahbig/393359-kamisato-ayaka-genshin-impact-game-art-4k-pc-wallpaper.jpg
+
+
+vì react chỉ có 1 page duy nhất nên khi xài addEventListener sẽ luôn tồn tại dù dom element cần xài đã bị gỡ ra khỏi dom rồi(qua view khác ko phải load lại toàn bộ page dom chỉ là thay đổi gỡ xóa dom Element của <div id="root"> thôi)
+nên là phải removeEventListerner ở useEffect khi UnMount element. 
+còn seversiderendering thì khác khi chuyển page là nó load lại toàn bộ dom luôn(1 page là 1 dom khác nên xài addEventListener ở page này thì qua page khác ko có script sẽ ko có EventListener đó trừ khi xài script đó ở page _Layout nha)
+check Dom event đối vs SSR(hoặc xem script ở cuối page có script nào addEventListener ko là đc): getEventListeners(document.querySelector('#togglePassword'));
+https://stackoverflow.com/questions/28056716/check-if-an-element-has-event-listener-on-it-no-jquery/41137585#41137585
+
+
+
+
+dùng onerror để fix image như bên dưới thì sẽ bị error trên console tab browser
+<img src="@(backendApiSliderPath + item.Image)" onerror="this.src='@(item.Image!="noimage.jpg"? item.Image: backendApiSliderPath + "noimage.jpg")';this.onerror=null;" width="100%" height="420px" />
+cách fix hiện tại check url có exist ko là đc bằng static method (Views/Shared/_SliderPartial.cshtml, ShoppingStore.Client.Repository/Utilities/URLExists)
+https://stackoverflow.com/questions/1979915/can-i-check-if-a-file-exists-at-a-url
+
+cách 2 sẽ fix ở backend và db
+thêm 1 cột isFromWebsite(default False) vô đb sau đó khi add ảnh vào nếu ảnh là ImageUrl thì set thêm cột này là true còn ảnh từ ImageUpload thì ko set là đc
+sau đó dùng cột này để check lúc generate ảnh là đc
+
+
+cách để search ajax : nhớ bên js dùng sao rồi search nó ajax là đc. vd: innerHtml in ajax
+
+https://stackoverflow.com/questions/14473597/include-antiforgerytoken-in-ajax-post-asp-net-mvc
+
+
+cookie
+https://stackoverflow.com/questions/68636135/accessing-cookies-from-static-class-in-asp-net-core
+https://stackoverflow.com/questions/37329354/how-to-use-ihttpcontextaccessor-in-static-class-to-set-cookies
+https://stackoverflow.com/questions/35704788/c-sharp-how-to-pass-on-a-cookie-using-a-shared-httpclient
+https://d-fens.ch/2016/12/27/howto-set-cookie-header-on-defaultrequestheaders-of-httpclient/
+
+https://stackoverflow.com/questions/3342140/cross-domain-cookies (iframe on img tag facebook like)
+
+Delete cookie when leaving page => session cookie(auto expire when session end)
+https://stackoverflow.com/questions/12402493/remove-cookie-upon-leaving-the-webpage
+
+https://stackoverflow.com/questions/39826992/how-can-i-set-a-cookie-in-react
+https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+
+
+https://stackoverflow.com/questions/23065907/why-does-jquery-getjson-have-a-success-and-a-done-function
+
+
+https://stackoverflow.com/questions/1566595/can-i-use-multiple-versions-of-jquery-on-the-same-page
+https://stackoverflow.com/questions/1041344/how-can-i-select-an-element-with-multiple-classes-in-jquery
+
+https://stackoverflow.com/questions/811614/c-sharp-is-keyword-and-checking-for-not
+
+https://stackoverflow.com/questions/72686771/convert-a-nullable-to-a-non-nullable-variable-in-c-dotnet
+
+https://stackoverflow.com/questions/12528107/check-an-integer-value-is-null-in-c-sharp#:~:text=To%20check%20if%20a%20nullable,%2F%2F%20It%20is%20null%20%3A(%20%7D
+
+https://stackoverflow.com/questions/3390750/how-to-use-int-tryparse-with-nullable-int
+//C1
+public int? TryParseNullable(string val)
+{
+    int outValue;
+    return int.TryParse(val, out outValue) ? (int?)outValue : null;
+}
+
+//C2
+int? myVal = int.TryParse(toCheck, out int tmp) ? (int?)tmp : null; // C# 7
+
+//C3
+int tmp;
+if (!int.TryParse(strValue.Trim(), out tmp))
+{
+    break;
+}
+intVal = tmp;
+
+sandbox response prevent alert popup (IDP server - Page/SecurityHeadersAttribute.cs)
+https://stackoverflow.com/questions/57683010/ignored-call-to-print-the-document-is-sandboxed-and-the-allow-modals-key
+
+
+
+public int Status { get; set; } // here is still Nullable = false when add-migration => if want this field or any field become Nullable mark it with the ? after the datatype (Ex. string?, int?) - check migration to see.
+
+
+https://stackoverflow.com/questions/4488383/set-a-datetime-database-field-to-now
+INSERT INTO dbo.Orders(Id, OrderCode, ShippingCost, UserName, Status, CreatedDate, UpdatedDate)
+Values ('485bb553-d73e-4ed1-6921-08dcf818d4bf', 'cbd22e37-2a31-4f43-b05a-4c02e601f934',50000.00,'thang123@gmail.com', 1, GETDATE(), GETDATE())
+
+
+When remove migration it will check the MigrationHistory table in Db register in Program.cs if already apply to DB it will reject remove migration unless we use -Force flag 
+remember if use -Force flag it will also revert in Database also. (one trick to revert but not revert db is change the dummy url db in Program.cs but do this the MigrationHistory
+in db will remain unchange).
+remove-migration -Context ShoppingStoreContext -Force
+
+
+https://stackoverflow.com/questions/5424968/dictionary-firstordefault-how-to-determine-if-a-result-was-found
+
+https://stackoverflow.com/questions/57730528/need-to-ignore-null-values-when-deserializing-json
+
+https://stackoverflow.com/questions/13461028/how-to-create-an-empty-view-in-mysql
+https://stackoverflow.com/questions/17142929/sql-dates-as-column-name
+https://stackoverflow.com/questions/1040654/how-to-convert-datetime-to-date-only-with-time-set-to-000000-000
+https://www.sqlshack.com/how-to-add-or-subtract-dates-in-sql-server/
+https://stackoverflow.com/questions/21928952/how-can-insert-into-a-table-300-times-within-a-loop-in-sql
+https://stackoverflow.com/questions/16296622/rename-column-sql-server-2008
+https://stackoverflow.com/questions/49557464/sql-server-cross-join-with-where-on-condition
+
+B1A1EA09-AC55-47FB-2583-08DCF6798CF5
+EAE3DA18-AE13-45E2-80B5-CFA8FFEEEA00
+1280759C-7F99-4CE0-BAA3-FB78BC2E6E58
+
+// maybe sort by condition to get the row we want and only select one column one row only from that row
+select * From Products 
+SELECT TOP 1 Products.BrandId
+From Products
+
+
+// Skip video playlist a Hiếu
+Send email
+
+task cho sau khi basic htmlcss
+cái mắt password
+addwishlist, addcompare stick to bottom
+css mấy nút qua lại brand,category,comment
+change add to cart have select number
+loading api (optional)
+dash board one button to calculate all product count (by order details) in each month (by order createdDate) and total orders placed in that month (by count Order) (optional)
+the above task is optional because we could add new data to Statistic table when user checkout order or when admin change order status to success (here is task need to done also)
+so that we just need to calculate data in Statistic table. (still have sql script to calculate if want use statisticProductAndOrder.sql).
+
+nếu làm tiếp thì bảng Statistic mình nghĩ nên như thế này (Id,OrderId, ProductId, ProductPrice(optional), Quantity, TotalRevenue,CreatedDate,UpdatedDate) => 
+1 Statistic (1 Id) chỉ có 1 Product (1 FK ProductId)
+nhưng 1 Product (1 FK ProductId) có nhiều Statistic (nhiều Id, nhiều dòng) 
+=> lấy khóa bên 1 bỏ qua bên nhiều (tương tự cho Order)
+
+Khi dùng dto có navigation property/collection ở cả 2 bảng thì phải chặn 1 bên nếu ko dùng ở cả 2 bảng chỉ 1 bảng thôi thì khỏi cần chặn.
+
+FK must be reference to Primary key (different from Join)
+
+{
+	date: item.date,
+	sold: item.sold,
+	quantity: item.quantity,
+	revenue: item.revenue,
+	profit: item.profit
+}
+
+Statistic handle theo video (tất cả orderDetail trong 1 ngày sẽ làm 1 row trong Statisticals)
+	public async Task RemoveStatisticalByOrder(OrderModel order) //Services/OrderReposity.cs API
+	{
+		// này vẫn chưa chuẩn nha còn shippingPrice vs CouponCode nữa thui tạm tha (có orderModel ở trên kìa lấy ra ShippingPrice vs CouponCode để tính toán thêm nha) 
+		//....
+	}
+
+
+
+9VPVcT28D8gNXR/7v868UPmeqGZgAwhkzQmPcpeRsfvE4xXkqVlG+dBJMkqOVaMQSpz++NtkzDoA70S481ATTe/ROYvdCxjRWVTpGsM2qOi8EK/DdNn80vTYkXMeSBvyvDyUIhG76+q1odEQcY/kdVU+h4ANabvlpaXRFnWmJDg=
+
+DECLARE @i INT = 1;
+WHILE @i <= 100
+BEGIN
+    INSERT INTO [dbo].[Statisticals] (
+        [Id], 
+        [Quantity], 
+        [Sold], 
+        [Revenue], 
+        [Profit], 
+        [CreatedDate], 
+        [UpdatedDate]
+    ) VALUES (
+        NEWID(), 
+        ABS(CHECKSUM(NEWID()) % 1000),  -- Mock Quantity
+        ABS(CHECKSUM(NEWID()) % 500),   -- Mock Sold
+        ABS(CHECKSUM(NEWID()) % 10000), -- Mock Revenue
+        ABS(CHECKSUM(NEWID()) % 5000),  -- Mock Profit
+        GETDATE(),                      -- Mock CreatedDate
+        GETDATE()                       -- Mock UpdatedDate
+    );
+
+    SET @i = @i + 1;
+END;
+
+Select * from [dbo].[Statisticals]
+
+Fix script
+DECLARE @i INT = 1;
+DECLARE @DaysOffset INT;
+WHILE @i <= 100
+BEGIN
+    SET @DaysOffset = ABS(CHECKSUM(NEWID()) % 365);  -- Offset up to 1 year
+    INSERT INTO [dbo].[Statisticals] (
+        [Id], 
+        [Quantity], 
+        [Sold], 
+        [Revenue], 
+        [Profit], 
+        [CreatedDate], 
+        [UpdatedDate]
+    ) VALUES (
+        NEWID(), 
+        ABS(CHECKSUM(NEWID()) % 1000),  -- Mock Quantity
+        ABS(CHECKSUM(NEWID()) % 500),   -- Mock Sold
+        ABS(CHECKSUM(NEWID()) % 10000), -- Mock Revenue
+        ABS(CHECKSUM(NEWID()) % 5000),  -- Mock Profit
+        DATEADD(DAY, -@DaysOffset, GETDATE()),  -- Different CreatedDate
+        GETDATE()                              -- Mock UpdatedDate
+    );
+
+    SET @i = @i + 1;
+END;
+
+
+https://stackoverflow.com/questions/31732718/font-awesome-two-versions
+https://stackoverflow.com/questions/45049873/how-to-remove-the-blue-highlight-of-button-on-mobile
+https://www.w3schools.com/jsref/event_animationend.asp
+https://stackoverflow.com/questions/8482820/run-css3-animation-only-once-at-page-loading
+https://stackoverflow.com/questions/17271100/jquery-detect-if-in-homepage-and-homepage-plus-url-variables
+https://stackoverflow.com/questions/39128931/clear-localstorage-on-tab-browser-close-but-not-on-refresh
+https://linguinecode.com/post/clear-localstorage-browser-tab-closing
+
+
+
+delete option (cascade/prevent in DB)
+mockdata db nên để ID tĩnh (set cứng) ko nên để động
+
+ajax ko work vs action controller mà trả về RedirectToAction
+
+khi làm xong FE gọi BE để xử lí có 2 cách: 1 là ajax/fetch 2 là asp-for/asp-controller/asp-route-value gọi thẳng action controller luôn
+fix cors ajax send request + antiforgerytoken (antiforgerytoken-in-ajax-post-asp-net-mvc)
+cẩn thận xài ViewBag nếu formValid bị lỗi phải set lại ViewBag ko sẽ bị mất (updateInformation user Form)
+TempData có thể đc lưu lại khi RedirectToAction (xem video playlist thầy gì đó trên youtube)
+        public IActionResult RedirectAuthorizePage(string slug, int pageNumber) // HomeController.cs FE, Views/Brand/Index.cshtml - <a href="/Home/RedirectAuthorizePage?slug=@slugQueryString&pageNumber=@pageNumberQueryString"
+        {
+            var redirectPage = Request.Headers.Referer;
+            //return RedirectToAction("RedirectPage", "Home", new { slug = slug, pageNumber = pageNumber });
+            return RedirectToAction("RedirectPage", "Home", new { referer = redirectPage });
+        }
+
+        [Authorize]
+        //public IActionResult RedirectPage(string slug, int pageNumber)
+        public IActionResult RedirectPage(string referer)
+        {
+            //return RedirectToAction("Index","Brand", new {slug=slug, pageNumber = pageNumber});
+            return Redirect(referer);
+        }
+		
+Attribute Be đơn giản là 1 class constructor như kiểu middleware sẽ đc gọi trc khi access và action controller (hoặc tùy nha có attribute sẽ chạy sau khi action hoàn thành để gửi log chẳng hạn xem video playlist thầy gì đó trên youtube)
+có 2 cách routing trong c# (xem video playlist thầy gì đó trên youtube)
+có thể chặn alert, css style inline đc luôn bằng cách thêm X-Content-Security-Policy trong request gửi đến và config trong file Page/SecurityHeadersAttribute.cs (IDP)
+
+
+để send image vs formdata mà ko cần tách ra 2 api riêng xem add Product (gửi qua header request = multipart/form-data)
+
+để send List<item> xem Update OrderDetail trong CheckoutController, trong CheckoutController có cái partialJsonPatch là json để truyền đc qua BE phải string nó lại giống như string form data khi add Product chứ ko send json bình thg qua đc nhớ chỗ này nếu cần send json đi phải dùng stringtify
+
+có 1 số khó khi deserialize object dynamic (coi update User API-not use patch use dynamic with 2 field only, DashboardController Admin, UpdateOrderStatusCode - UpdateOrder - OrdersController.cs API
+, try temp access cache data to select if reuse or not getbrandsByOrderDetailsPaginate-[CacheTestAttribute(1000, true)]-BrandsController.cs API) 
+, send json paginationMetaData (serial-deserialize liên tục mới đc do bị serialize 2 lần, BrandsViewComponent FE + CacheAttribute API).
+
+để test db diagram ef core power tools khi có 2 db context trong proj -> tạo 1 project mới add dbcontext và model của thg muốn xem là đc(chỉ 1 đứa thôi)
+muốn remove-migration thì model trong code phải the same ngay lúc remove mới đc nếu change sẽ ko cho remove, nếu đã update db muốn remove thì phải --Force
+null khác vs empty nha thử add-migration để test là thấy nếu empty (int hoặc string j đó add nhiều line lên test 1 lần là đc) thì sẽ có default value: là ntn còn null là ko có default value luôn
+nên là tùy theo mình lưu DB để check condition cho chuẩn(IsNullOrEmpty cho chuẩn nha chứ check isNull cho "" String.Empty là vẫn sai đó)
+test migration DB
+ex:    	public int CapitalPrice { get; set; } // Giá vốn
+        public string? CapitalPrice1 { get; set; } // Giá vốn
+        public string CapitalPrice2 { get; set; } = "" // Giá vốn, ko có required sẽ lỗi hoặc default value hoặc attribute required sẽ lỗi, ko xài cả required vs default value = "" cùng 1 lúc nha sẽ bị lỗi
+        public decimal CapitalPrice3 { get; set; } // Giá vốn
+        public decimal? CapitalPrice4 { get; set; } // Giá vốn
+		ko biết sao nhưng bị lỗi thêm 1,2 dòng 1 lần thôi nha thêm hết như trên bị lỗi á
+		à biết sao lỗi rồi string thì phải thêm default value nha do mình xài mock data product trong file context á nên là mockData đó ko có data của field string mình test có thể qua 1 model khác để thử
+		
+decimal: type: "decimal(18,2)", nullable: false,defaultValue: 0m | nullable: true
+int: type: "int", nullable: false, defaultValue: 0 | nullable: true
+string: type: "nvarchar(max)", nullable: false, defaultValue: "" | nullable: true
+
+cách để redirect url về ban đầu nếu min max price product nhập trên url vượt quá quy định (coi trong code check query param hợp lệ trong Request gửi đến thôi).
+
+Trong C# request khác vs url hiện tại trên browser nha (Ex: khi pagination BrandViewComponent mình dùng technique load ViewCompent trong return của Action Controller nên Request ở đây sẽ là
+Action Controller load ViewComponent chứ ko phải url trên browser - phải fix lỗi màu chữ phải cam nếu đúng slug xem code để thấy)
+
+
+coi BrandsViewComponent để biết thêm use Generic để làm template giống callback function reactjs. (Có thể truyền nhiều Generic đc luôn nha T1,T2 - nếu cần)
+coi productDetail có phần similar products có cách limit tự nghĩ khá hay
+coi cart page để rõ cookie, session, signalR(render 1 phần: đẩy product mới lên đầu table admin nếu admin đang ở trang order đó ko thì thêm số order mới thôi)
+SignalR thì làm bằng cách khi order xong (CheckoutController đẩy vô cookie r user sẽ đẩy qua trang orderHistory, ở user FE thì chỉ lắng nghe ở orderHistory thôi nếu có cookie order mới thì sẽ append vô table ở Order Admin - nếu admin đang ở trang order đó ko thì thêm số order mới thôi và ở admin thì signalR đc lắng nghe ở layout -> fullPage luôn)
+, ajax(send request to controller FE + render 1 phần thôi: coupon+shippingprice), js,...
+coi song.js để rõ cách xài js vip pro hơn có thể thay đc cả ajax nếu muốn. (kiểu 2 thg js vs ajax cũng na ná nhau á để send request thì ajax là ajax, js là fetch(nếu ko cài axios)
+để lắng nghe event ajax là .on('action', callbackfunc) js là addEventListener,... , để get value element ajax là .val()(.text nếu lấy text chứ ko lấy value ex: selectoption) js là .value
+, để lấy ra element thì ajax: $('.element') còn js(document.getElementByID, getSelector, getSelectorAll,...) có thể thêm data-attribute để khi select element gửi qua ajax hoặc fetch có thểm data luôn (filter product price, pagination, ...)
+, để thêm data vào element thì ajax .append() còn js có .innerHtml,... nói chung 2 thg na ná nhau á thg thì c# sẽ xài vs ajax hơn document.ready rồi làm các event bên trong nhưng nếu muốn thì xài js vẫn thoải mái (song.js xài cả sessionStorage luôn)
+ $('.select-update-order').change(function (e) { // change event select Admin\Views\ViewOrder.cshtml Fe
+	 var isConfirm = confirm('Confirm Order Status ?');
+	if (isConfirm == false) {
+		e.preventDefault();
+		e.stopPropagation(); // prevent select isn't updated but the ui still change
+		// alert(preVal);
+		$(this).val(@ViewBag.orderStatus); return;
+	}
+	
+ViewCompent thì có thể gọi api để handle logic thêm(BrandsViewComponent) rồi trả về View() còn PartialView sẽ bắt buộc nằm trong 1 View luôn vs nhận parameter truyền vào
+có 1 cái a Hiếu chỉ ra trong lúc code theo a đó là khi đặt ViewCompent hay PartialView trong 1 View có ViewBag/ViewData/TempData thì thg ViewCompent hay PartialView tự có theo luôn mà ko cần truyền vào
+
+
+bản chất của signalR là client có thể gọi đến method của server trong server Hub và server cũng có thể gọi method ở client. (gọi method qua lại bằng 1 tunnel luôn mở do client establish request đến server)
+bản chất của redis là nosql db thôi (key-value), tận dụng lifecycle attribute .Net để set và get cache.
+sonarqube: setup thôi r đưa project vào cho nó test r fix thôi.
+jenkin: setup thôi xong rồi làm pipeline step để auto build khi push commit.(có thể làm local rồi nginx để ng khác truy cập vào hoặc 1 hướng mình đang nghĩ là dùng render.com deploy luôn để nó build docker image ra là xài online luôn)
+
+
+shortcut
+vs studio
+ctrl+F12: go to definition 
+ctrl+shift+a: add new item
+ctrl+k,ctrl+d: format code
+tab, shift+tab: tab/revert tab
+uncomment: để con trỏ ở trong vùng đang comment ctrl+. là đc ko cần bôi đen hết
+
+vs code
+search alt trong file note.txt
+Cách để css (video 83. Header CSS)
+cách để chọn nhanh ctrl+shift+L -> shift+mũi tên phải -> ctrl+c , sau đó để 1 tab màn hình css(chia 2 màn hình) trong vs code copy nó vào rồi alt để đặt mũi tên ở đầu -> ctrl + mũi tên phải  rồi {} là xong (xem video đoạn đầu cho rõ)
+
+.col.l-3*4>.item{Item $} //emmet $ sẽ là số tăng dần 1,2,3,4,...
+
+
+https://stackoverflow.com/questions/17549426/how-can-i-compare-a-date-in-c-sharp-to-1-1-0001-120000-am
+
+
+
+https://viblo.asia/p/payment-with-momo-eW65GbpOlDO
+https://github.com/momo-wallet/payment/tree/master/c%23/QuickPay
+<input type="hidden" name="OrderId" value="@Guid.NewGuid().ToString()"/> 
+
+
+https://sandbox.vnpayment.vn/apis/docs/loai-hang-hoa/
+
+
+
+https://stackoverflow.com/questions/53408175/change-the-identity-property-of-a-column-the-column-needs-to-be-dropped-and-rec
+I had to:
+Comment the table totally from code
+Run a migration that clears it from DB
+Uncomment table again with corrected mapping
+Run migration again
+Done
+
+
+
+https://stackoverflow.com/questions/4070835/disable-history-go-1-on-certain-pages
+https://stackoverflow.com/questions/47578522/how-to-prevent-users-from-going-back-to-the-previous-page
+https://developer.mozilla.org/en-US/docs/Web/API/History_API
+https://stackoverflow.com/questions/8969878/in-javascript-how-do-i-clear-the-back-history-1/8969975#8969975
+https://stackoverflow.com/questions/3528324/how-to-get-the-previous-url-in-javascript
+https://stackoverflow.com/questions/25806608/how-to-detect-browser-back-button-event-cross-browser
+https://stackoverflow.com/questions/14645011/window-onbeforeunload-and-window-onunload-is-not-working-in-firefox-safari-ope
+https://stackoverflow.com/questions/31464010/cookie-not-getting-created-when-redirecting (callback vnpay not working by set SameSite: strict)
+https://www.w3schools.com/cssref/playdemo.php?filename=playcss_text-decoration
+https://stackoverflow.com/questions/754666/using-jquery-how-do-i-get-the-text-value-of-an-element
+https://stackoverflow.com/questions/4264736/convert-string-to-decimal-keeping-fractions
+https://stackoverflow.com/questions/6095795/convert-a-javascript-string-variable-to-decimal-money
+https://www.shecodes.io/athena/1279-how-to-remove-a-character-from-a-string-in-javascript#:~:text=in%204.47%20seconds-,The%20easiest%20way%20to%20remove%20a%20character%20from%20a%20string,the%20replace()%20function%2Fmethod.&text=var%20str%20%3D%20%22Hello%20World!,Output%3A%20%22ello%20World!%22
+
+
+
+https://stackoverflow.com/questions/35907642/custom-header-to-httpclient-request
+để gửi data qua api có rất nhiều cách
+1. tạo 1 HttpRequest r append StringData lên rồi dùng SendAsync để gửi qua BE (coi link ở trên)
+2. dùng trong Product Admin: nén 1ại 1 MultipartFormDataContent (để chứa ảnh nữa) rồi gửi qua PostAsync như bình thường
+3. dùng trong object JsonPatch CheckoutController: nén json lại thành 1 string rồi rồi gửi qua PostAsync như bình thường
+4. gửi class qua thôi là đc (DtoForCreation, DtoForEdit)
+5. nếu ko dùng object chỉ gửi đc 1 field qua thôi.(string, int,...)
+
+đối vs get (ko truyền qua body đc -> ko đc có params khi dùng GetAsync, GetToJsonAsync)
+1. /{param1}/{param2}/{param3}
+2. ?param1={param1}&param2={param2}  (có thể tạo 1 anonymous object rồi stringtify nó lại gửi theo cách này qua BE deserialize ra xài cũng đc)
+3. tạo 1 HttpRequest r append StringData lên rồi dùng SendAsync để gửi qua BE (coi link ở trên)
+4. đổi qua SendAsync luôn vs method Get r gửi data qua header HttpRequest là đc (xem cách 1 HttpRequest ở trên).
+
+
+
+Controllers/PaymentController.cs FE
+, model.Amount.ToString()); // Amount is double here we treat as string so if it's not number then default double is 0 => check BE Condition is "0"
+
+
+Task còn: Tính cái statistic khi thanh toán order cho chuẩn (còn shippingPrice vs CouponCode á)
+        public async Task RemoveStatisticalByOrder(OrderModel order) //Services/OrderRepository API
+        {
+            // này vẫn chưa chuẩn nha còn shippingPrice vs CouponCode nữa thui tạm tha (có orderModel ở trên kìa lấy ra ShippingPrice vs CouponCode để tính toán thêm nha) 
+
+
+Api Mock
+cứ DB Inmemory r phang tới thôi (nếu có mock trong ShoppingStoreContext thì table đó sẽ có mock còn ko thì tự _context.Table.AddRange() trong class test đó để test table đó là đc)
+sẽ dùng mock(Moq setup) hoặc Fake khi muốn test mấy func ko đụng vào DB(static helper class, fake cacheResponse class...) 
+			
+FE Client Mock		
+mock đc session, cookie, authenticate,configuration(env key), api service return
+mock đc Add Cart(Session)
+mock đc BrandViewComponent
+mock đc Checkout action (session, cookie, authenticate,....)
+check đc cả Model,ViewData,TempData,ViewBag trong ViewModel trả về có đúng vs mình mock ko
+configuration thì copy file appsetting của fe vô solution test luôn r config trong code giống a Tedu là đc.
+
+cart -> checkout -> brandViewComponent
+
+e4063271-758a-40ac-b0dc-08dd09171f69
+
+
+
+task còn lại
+send email(nếu gửi nhiều mail 1 lúc thì dùng rabbitMQ nữa kìa chưa học :<)
+check statistic của admin cho chuẩn thêm (còn shippingPrice, coupon).
+deploy thì slider phần image chưa handle upload (nếu hosting bị load lại là mất cần handle cloudinary luôn hiện tại đang lười nên dùng url online :3)
+description swagger
+api version(optional)
+chat.js(signalR) còn thiếu 1 cột COD khi thêm data vào
+
+//Timezone future
+public IEnumerable<T> ConvertToLocalTimeArray<T>(IEnumerable<T> data) where T : BaseEntity
+{
+	foreach (var item in data)
+	{
+		//item.CreatedDate = item.CreatedDate.ToLocalTime(); // ToLocalTime is wrong because localTime is still of the server(render hosting or server hosting) => still UTC (because we store UTC in Db)
+		//item.UpdatedDate = item.UpdatedDate.ToLocalTime();
+		item.CreatedDate = item.CreatedDate.AddHours(7); // GMT+7, if want depend on user localtime then check localtime user from request or sthg then addHours depend on that user localTime
+		item.UpdatedDate = item.UpdatedDate.AddHours(7);
+	}
+	return data;
+}
+
+phần Coupon có thể handle lại như thế này: (nếu đc nhận việc thì con sẽ fix liền ^^)
+thêm 2 cột nữa trong bảng Coupon 1 cột là discountPercent, 1 cột là discountDecrease sau đó khi admin thêm coupon sẽ thêm data cho 1 trong 2 cột này là dc
+Ví dụ:
+nếu thêm bên phần trăm Ex: admin (muốn giảm 40%) -> nhập 40/100 -> giá gốc - (giá gốc * 40/100)
+nếu thêm bên decrease Ex: admin (muốn giảm 30 đô) -> nhập 30 -> giá gốc - 30 
+
+
+DELETE FROM public."OrderDetails"
+DELETE FROM public."Orders"
+DELETE FROM public."Statisticals"
+DELETE FROM public."ProductQuantites"
+DELETE FROM public."Products"
+DELETE FROM public."Brands"
+DELETE FROM public."Categories"
+
+// SQL Server
+SELECT [s].[Id], [s].[CreatedDate], [s].[Description], [s].[Name], [s].[Slug], [s].[Status], [s].[UpdatedDate]
+      FROM (
+                                Select TOP(16) Brands.*, (CASE WHEN totalBrandCountTable.SumBrandQuantity IS NULL THEN 0 ELSE totalBrandCountTable.SumBrandQuantity END) AS SumBrandQuantity
+                                From Brands
+                                Left Outer Join (
+                                        --Select Products.BrandId, totalProductCountTable.*
+                                        select Products.BrandId , Sum(totalProductCountTable.SumProductQuantity) as SumBrandQuantity
+                                        From Products
+                                        Join (
+                                                select distinct ProductId, SUM(Quantity) OVER (PARTITION BY ProductId) as SumProductQuantity
+                                                From OrderDetails
+                                                Join Orders On OrderDetails.OrderCode = Orders.OrderCode
+                                        ) totalProductCountTable
+                                        ON Products.Id = totalProductCountTable.ProductId
+                                        Group by Products.BrandId
+                                ) totalBrandCountTable
+                                On Brands.Id = totalBrandCountTable.BrandId
+                                Order by SumBrandQuantity desc
+      ) AS [s]
+      ORDER BY (SELECT 1)
+      OFFSET @__p_1 ROWS FETCH NEXT @__p_2 ROWS ONLY
+
+
+// Postgres Db
+		SELECT brands.*, 
+			   COALESCE(totalbrandcounttable.SumBrandQuantity, 0) AS SumBrandQuantity
+		FROM "public"."Brands" AS brands
+		LEFT OUTER JOIN (
+			SELECT products."BrandId", SUM(totalproductcounttable.SumProductQuantity) AS SumBrandQuantity
+			FROM "public"."Products" AS products
+			JOIN (
+				SELECT DISTINCT orderdetails."ProductId", SUM(orderdetails."Quantity") OVER (PARTITION BY orderdetails."ProductId") AS SumProductQuantity
+				FROM "public"."OrderDetails" AS orderdetails
+				JOIN "public"."Orders" AS orders ON orderdetails."OrderCode" = orders."OrderCode"
+			) AS totalproductcounttable
+			ON products."Id" = totalproductcounttable."ProductId"
+			GROUP BY products."BrandId"
+		) AS totalbrandcounttable
+		ON brands."Id" = totalbrandcounttable."BrandId"
+		ORDER BY SumBrandQuantity DESC
+		LIMIT 16;
+
+							
+// SQLite
+Select Brands.*, (CASE WHEN totalBrandCountTable.SumBrandQuantity IS NULL THEN 0 ELSE totalBrandCountTable.SumBrandQuantity END) AS SumBrandQuantity
+                                From Brands
+                                Left Outer Join (
+                                        --Select Products.BrandId, totalProductCountTable.*
+                                        select Products.BrandId , Sum(totalProductCountTable.SumProductQuantity) as SumBrandQuantity
+                                        From Products
+                                        Join (
+                                                select distinct ProductId, SUM(Quantity) OVER (PARTITION BY ProductId) as SumProductQuantity
+                                                From OrderDetails
+                                                Join Orders On OrderDetails.OrderCode = Orders.OrderCode
+                                        ) totalProductCountTable
+                                        ON Products.Id = totalProductCountTable.ProductId
+                                        Group by Products.BrandId
+                                ) totalBrandCountTable
+                                On Brands.Id = totalBrandCountTable.BrandId
+                                Order by SumBrandQuantity desc
+                                LIMIT 16							

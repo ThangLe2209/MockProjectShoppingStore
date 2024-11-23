@@ -1,0 +1,91 @@
+﻿@model ContactDto
+@inject IConfiguration Configuration
+@{
+	var backendApiLogoPath = Configuration.GetValue<string>("ShoppingStoreAPILogoPath");
+}
+<div class="row">
+	<div class="col-sm-2">
+		<div class="companyinfo">
+			<h2><span>e</span>-shopper</h2>
+			@* <p><img src="@(backendApiLogoPath + Model.LogoImg)" onerror="this.src='@(Model.LogoImg!="noimage.jpg"? Model.LogoImg: backendApiLogoPath + "noimage.jpg")';this.onerror=null;" width="120" /></p> *@
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,sed do eiusmod tempor</p>
+			@* <p>@Html.Raw(@Model.Description)</p> *@
+		</div>
+	</div>
+	<div class="col-sm-7">
+		<div class="col-sm-3">
+			<div class="video-gallery text-center">
+				<a href="#">
+					<div class="iframe-img">
+						<img src="/images/logo.png" alt="" />
+					</div>
+					<div class="overlay-icon">
+						<i class="fa fa-play-circle-o"></i>
+					</div>
+				</a>
+				<p>Circle of Hands</p>
+				<h2>24 DEC 2014</h2>
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<div class="video-gallery text-center">
+				<a href="#">
+					<div class="iframe-img">
+						<img src="/images/logo.png" alt="" />
+					</div>
+					<div class="overlay-icon">
+						<i class="fa fa-play-circle-o"></i>
+					</div>
+				</a>
+				<p>Circle of Hands</p>
+				<h2>24 DEC 2014</h2>
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<div class="video-gallery text-center">
+				<a href="#">
+					<div class="iframe-img">
+						<img src="/images/logo.png" alt="" />
+					</div>
+					<div class="overlay-icon">
+						<i class="fa fa-play-circle-o"></i>
+					</div>
+				</a>
+				<p>Circle of Hands</p>
+				<h2>24 DEC 2014</h2>
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<div class="video-gallery text-center">
+				<a href="#">
+					<div class="iframe-img">
+						<img src="/images/logo.png" alt="" />
+					</div>
+					<div class="overlay-icon">
+						<i class="fa fa-play-circle-o"></i>
+					</div>
+				</a>
+				<p>Circle of Hands</p>
+				<h2>24 DEC 2014</h2>
+			</div>
+		</div>
+	</div>
+
+@* 	<div class="col-sm-7">
+		<div class="col-sm-5">
+			@Html.Raw(Model.Map)
+		</div>
+	</div> *@
+	<div class="col-sm-3">
+		<div class="address" style="margin-top: 57px">
+@* 			<img src="/images/home/map.png" alt="" />
+			<p>505 S Atlantic Ave Virginia Beach, VA(Virginia)</p> *@
+			<h5>Name: @Model.Name</h5>
+			<h5>Email: @Model.Email</h5>
+			<h5>Phone: @Model.Phone</h5>
+		</div>
+	</div>
+</div>

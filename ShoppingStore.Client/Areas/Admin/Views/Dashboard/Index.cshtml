@@ -1,0 +1,178 @@
+﻿@model StatisticalDto
+@{
+    ViewData["title"] = "Dashboard Statistic";
+}
+<h3>Dashboard Statistic</h3>
+
+<div class="row">
+    <div class="col-md-3">
+        <p>Statistic Product</p>
+        @ViewBag.CountProduct
+    </div>
+    <div class="col-md-3">
+        <p>Statistic Order</p>
+        @ViewBag.CountOrder
+    </div>
+    <div class="col-md-3">
+        <p>Statistic Category</p>
+        @ViewBag.CountCategory
+    </div>
+    <div class="col-md-3">
+        <p>Statistic User</p>
+        @ViewBag.CountUser
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <h4>Filter by:</h4>
+            <select class="filter-select">
+                <option value="">---Filter by---</option>
+                <option value="7">7 days before</option>
+                <option value="30">1 month before</option>
+                <option value="90">3 months before</option>
+                <option value="365">1 year before</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <h4>Options:</h4>
+            <form>
+            <label>From</label>
+            <input type="date" class="form-control" id="date_from" asp-for="@Model.CreatedDate" required/> 
+            <label>To</label>
+            <input type="date" class="form-control" id="date_to" asp-for="@Model.CreatedDate" required/>
+            <button type="submit" id="filterButton" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <h4>Statistic Chart</h4>
+        <div id="myfirstchart" style="height: 250px;"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var ChartMorris = new Morris.Line({
+                // ID of the element in which to draw the chart.
+                element: 'myfirstchart',
+                // Move data processing inside the success callback
+                // Chart data records -- each entry in this array corresponds to a point on
+                // the chart.
+                data: [],
+                // The name of the data record attribute that contains x-values.
+                xkey: 'date',
+                // xLabelFormat: function (x) {
+                //     return new Date(x).toLocaleDateString();
+                // },
+                // A list of names of data record attributes that contain y-values.
+                ykeys: ['sold', 'quantity', 'revenue', 'profit'],
+                // Labels for the ykeys -- will be displayed when you hover over the
+                // chart.
+                labels: ['Sold Quantity', 'Total Orders', 'Revenue', 'Profit']
+            })
+
+            $.ajax({
+                url: "@Url.Action("GetChartData", "Dashboard")",
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    // console.log({ data });
+                    // Process the retrieved data
+                    if (data) {
+                        ChartMorris.setData(data.map(function (item) {
+                            return {
+                                date: item.date,
+                                sold: item.sold,
+                                quantity: item.quantity,
+                                revenue: item.revenue,
+                                profit: item.profit
+                            };
+                        }));
+                    } else {
+                        console.warn("No data recieved for Morris chart update.");
+                        ChartMorris.setData([]);
+                    }
+                },
+                error: function (error) {
+                    alert("Error fetching data: ", error);
+                }
+            })
+
+            $('.filter-select').on('change', function () {
+                var days = $(this).val();
+                var endDate = new Date();
+                var startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000);
+
+                // alert(startDate)
+                // alert(endDate)
+                $.ajax({
+                    url: "@Url.Action("GetChartDataBySelect", "Dashboard")",
+                    type: "POST",
+                    data: {
+                        startDate: startDate.toISOString().split('T')[0],
+                        endDate: endDate.toISOString().split('T')[0],
+                    },
+                    // dataType: "json",
+                    success: function (data) {
+                        // console.log({ data });
+                        // Process the retrieved data
+                        if (data) {
+                            ChartMorris.setData(data.map(function (item) {
+                                return {
+                                    date: item.date,
+                                    sold: item.sold,
+                                    quantity: item.quantity,
+                                    revenue: item.revenue,
+                                    profit: item.profit
+                                };
+                            }));
+                        } else {
+                            console.warn("No data recieved for Morris chart update.");
+                            ChartMorris.setData([]);
+                        }
+                    },
+                    error: function (error) {
+                        alert("Error fetching data: ", error);
+                    }
+                })
+            })
+
+            // Filter by option
+            $("#filterButton").click(function (e) {
+                var fromDate = $("#date_from").val();
+                var toDate = $("#date_to").val();
+                if (fromDate !== "" && toDate !== "") {
+                    e.preventDefault();
+                    $.ajax({
+                        // url: "@Url.Action("FilterData", "Dashboard")",
+                        url: "@Url.Action("GetChartDataBySelect", "Dashboard")",
+                        // data: { fromDate: fromDate, toDate: toDate },
+                        data: { startDate: fromDate, endDate: toDate },
+                        type: "POST",
+                        success: function (data) {
+                            if (data) {
+                                ChartMorris.setData(data.map(function (item) {
+                                    return {
+                                        date: item.date,
+                                        sold: item.sold,
+                                        quantity: item.quantity,
+                                        revenue: item.revenue,
+                                        profit: item.profit
+                                    };
+                                }));
+                            } else {
+                                console.warn("No data recieved for Morris chart update.");
+                                ChartMorris.setData([]);
+                            }
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+}

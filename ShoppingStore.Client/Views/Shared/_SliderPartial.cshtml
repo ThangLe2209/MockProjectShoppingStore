@@ -1,0 +1,92 @@
+﻿@using ShoppingStore.Client.Repository
+@inject IConfiguration Configuration
+@{
+    var backendApiSliderPath = Configuration.GetValue<string>("ShoppingStoreAPISliderPath");
+    int index = 0;
+}
+
+@if (ViewBag.Sliders.Count > 0)
+{
+    <section id="slider">
+        <!--slider-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="slider-carousel" class="carousel slide" data-ride="carousel">
+                        @*                         <ol class="carousel-indicators">
+                    <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#slider-carousel" data-slide-to="1"></li>
+                    <li data-target="#slider-carousel" data-slide-to="2"></li>
+                    </ol> *@
+                        <ol class="carousel-indicators">
+                            @for (int indexIndicators = 0; indexIndicators < ViewBag.Sliders.Count; indexIndicators++)
+                            {
+                                <li data-target="#slider-carousel" data-slide-to="@indexIndicators" class="@(indexIndicators == 0 ? "active" : "")"></li>
+                            }
+                        </ol>
+
+                        <div class="carousel-inner">
+                            @* 							<div class="item active">
+                        <div class="col-sm-6">
+                        <h1><span>E</span>-SHOPPER</h1>
+                        <h2>Free E-Commerce Template</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+                        <button type="button" class="btn btn-default get">Get it now</button>
+                        </div>
+                        <div class="col-sm-6">
+                        <img src="images/home/girl1.jpg" class="girl img-responsive" alt="" />
+                        <img src="images/home/pricing.png" class="pricing" alt="" />
+                        </div>
+                        </div> *@
+
+                            @foreach (var item in ViewBag.Sliders)
+                            {
+                                <div class="item @(index == 0 ?"active": "")">
+                                    <div class="col-sm-12">
+                                        @if (Utilities.URLExists(backendApiSliderPath + item.Image))
+                                        {
+                                            <img src="@(backendApiSliderPath + item.Image)" width="100%" height="420px" />
+                                        }
+                                        else
+                                        {
+                                            <img src="@item.Image" width="100%" height="420px" />
+                                        }
+                                        @* <img src="@(backendApiSliderPath + item.Image)" onerror="this.src='@(item.Image!="noimage.jpg"? item.Image: backendApiSliderPath + "noimage.jpg")';this.onerror=null;" width="100%" height="420px" /> *@
+                                    </div>
+                                </div>
+                                index++;
+                            }
+                            @* 						<div class="item active">
+                        <div class="col-sm-12">
+                        <img src="https://cdn.tgdd.vn/Files/2020/08/31/1285622/laptopnew-asus-rog-g512-thiet-ke-7d20b542-1681-4621-bcaf-9f72c60ef904_1253x590-800-resize.jpg" width="100%" height="420px" />
+                        </div>
+                        </div>
+
+                        <div class="item">
+                        <div class="col-sm-12">
+                        <img src="https://i0.wp.com/pczone.ie/wp-content/uploads/2018/11/RTX-banner.jpg?fit=1020%2C478&ssl=1" width="100%" height="420px" />
+                        </div>
+                        </div>
+
+                        <div class="item">
+                        <div class="col-sm-12">
+                        <img src="https://www.asus.com/campaign/Powered-by-ASUS-UK/images/9513Desktop_1920x740_PBA--logoremoved.jpg" width="100%" height="420px" />
+                        </div>
+                        </div> *@
+                        </div>
+
+                        <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+                        <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--/slider-->
+}

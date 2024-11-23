@@ -1,0 +1,55 @@
+﻿@using System.Web
+@{
+    var currentUrl = Url.ActionContext.HttpContext.Request.Path;
+    string urlFullPart = Context.Request.Path + Context.Request.QueryString;
+    var minPrice = @ViewBag.Min != null ? $"&min={@ViewBag.Min}" : "";
+    var maxPrice = @ViewBag.Max != null ? $"&max={@ViewBag.Max}" : "";
+    var searchTerm = ViewBag.Keyword != null && ViewBag.Keyword != "" ? $"?searchTerm={ViewBag.Keyword}" : "";
+    var brandSlug = @ViewBag.BrandSlug != null ? $"?slug={@ViewBag.BrandSlug}" : "";
+    var categorySlug = @ViewBag.CategorySlug != null ? $"?slug={@ViewBag.CategorySlug}" : "";
+}
+
+<div class="">
+    <div class="row">
+        <div class="col-md-2">
+            <h5>Sorted by:</h5>
+            <select class="form-control" id="sort_by"> 
+                <option value="@currentUrl@searchTerm@brandSlug@categorySlug">Reset</option>
+                <option selected="@(@ViewBag.SortBy == "price_increase" ? "selected" : false)"
+                value="@currentUrl?@(ViewBag.Keyword != null && ViewBag.Keyword != "" ? $"searchTerm={ViewBag.Keyword}&" : 
+                ViewBag.BrandSlug != null || ViewBag.CategorySlug != null
+                ? $"slug={ViewBag.BrandSlug ?? ViewBag.CategorySlug}&" : "")pageNumber=1&sort_by=price_increase@{@minPrice@maxPrice}">Increase Price</option>
+
+                <option selected="@(@ViewBag.SortBy == "price_decrease" ? "selected" : false)"
+                value="@currentUrl?@(ViewBag.Keyword != null && ViewBag.Keyword != "" ? $"searchTerm={ViewBag.Keyword}&" : 
+                ViewBag.BrandSlug != null || ViewBag.CategorySlug != null
+                ? $"slug={ViewBag.BrandSlug ?? ViewBag.CategorySlug}&" : "")pageNumber=1&sort_by=price_decrease@{@minPrice@maxPrice}">Decrease Price</option>
+
+                <option selected="@(@ViewBag.SortBy == "product_newest" ? "selected" : false)"
+                value="@currentUrl?@(ViewBag.Keyword != null && ViewBag.Keyword != "" ? $"searchTerm={ViewBag.Keyword}&" : 
+                ViewBag.BrandSlug != null || ViewBag.CategorySlug != null
+                ? $"slug={ViewBag.BrandSlug ?? ViewBag.CategorySlug}&" : "")pageNumber=1&sort_by=product_newest@{@minPrice@maxPrice}">Newest</option>
+
+                <option selected="@(@ViewBag.SortBy == "product_oldest" ? "selected" : false)"
+                value="@currentUrl?@(ViewBag.Keyword != null && ViewBag.Keyword != "" ? $"searchTerm={ViewBag.Keyword}&" : 
+                ViewBag.BrandSlug != null || ViewBag.CategorySlug != null
+                ? $"slug={ViewBag.BrandSlug ?? ViewBag.CategorySlug}&" : "")pageNumber=1&sort_by=product_oldest@{@minPrice@maxPrice}">Oldest</option>
+            </select>
+        </div>
+
+        <div class="col-md-5">
+            <h5>Price Filter</h5>
+            @* <form asp-action="Index" asp-controller="Category"> *@
+                <div style="display: flex">
+                    <b class="pull-left" style="margin: 0 10px 0 0">$ 0</b>
+                    <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="5000" data-slider-step="5" 
+                    data-slider-value="@(ViewBag.Min == null && ViewBag.Max == null ? "[100,1200]" : $"[{ViewBag.Min},{ViewBag.Max}]")" id="sl2"><br />
+                    <b class="pull-right" style="margin: 0 0 0 10px">$ 5000</b>
+                </div>
+            <button name="locgia" data-current-url="@currentUrl" data-current-sorted-by="@ViewBag.SortBy" data-current-search-term="@ViewBag.Keyword" class="btn btn-primary btn-locgia">Filter</button>
+                @* <button type="submit" name="locgia" data-current-url="@currentUrl" class="btn btn-primary btn-locgia">Filter</button> *@
+            @* </form> *@
+
+        </div>
+    </div>
+</div>

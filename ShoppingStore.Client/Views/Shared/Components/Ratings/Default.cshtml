@@ -1,0 +1,48 @@
+﻿@model IEnumerable<RatingDto>
+
+<style>
+    .comment-listtable {
+        position: relative;
+    }
+
+    .comments-navigate {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        cursor: default;
+    }
+
+    .comments-navigate span {
+        padding: 0 2px;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 300ms;
+    }
+
+    .comments-navigate span:hover {
+        color: #fdb45e;
+    }
+</style>
+<div class="col-sm-12 comment-listtable">
+    @foreach (var item in Model)
+    {
+        <ul>
+            <li><a href=""><i class="fa fa-user"></i>@item.Name</a></li>
+            @* <li><a href=""><i class="fa fa-clock-o"></i>12:41 PM</a></li> *@
+            @* <li><a href=""><i class="fa fa-calendar-o"></i>31 DEC 2014</a></li> *@
+        </ul>
+        <p>@item.Comment</p>
+    }
+
+    @if (@ViewBag.Pager.TotalPageCount > 1)
+    {
+        <div class="comments-navigate">
+            <span onclick="HandleNextRatingPage({input: @ViewBag.RatingPageId - 1, productId: '@ViewBag.ProductId', totalPageCount: @ViewBag.Pager.TotalPageCount})">@Html.Raw("<")</span>
+            <span onclick="HandleNextRatingPage({input: @ViewBag.RatingPageId + 1, productId:  '@ViewBag.ProductId', totalPageCount: @ViewBag.Pager.TotalPageCount})">@Html.Raw(">")</span>
+        </div>
+    }
+</div>
+
+<script type="text/javascript" src="~/js/BrandAndCategoryHandleNextPage.js" defer></script>
+
+@* Handle script in ViewComponent/Partial View Razor Page: https://stackoverflow.com/questions/43114200/where-should-i-include-a-script-for-a-view-component *@

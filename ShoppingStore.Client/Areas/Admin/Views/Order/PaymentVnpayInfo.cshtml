@@ -1,0 +1,33 @@
+﻿@model VnpayDto
+
+@{
+    ViewData["title"] = "Vnpay Info";
+}
+
+<h3>VnPay Payment Info</h3>
+<a asp-action="Index" asp-controller="Order" asp-area="Admin">Back to Orders</a>
+<table class="table" id="myTable">
+    <thead>
+        <tr>
+            <th scope="col">TransactionId</th>
+            <th scope="col">OrderInfo</th>
+            <th scope="col">PaymentId</th>
+            <th scope="col">OrderId</th>
+            <th scope="col">PaymentMethod</th>
+            <th scope="col">DatePaid</th>
+        </tr>
+    </thead>
+    <tbody>
+
+            <tr>
+                <th scope="row">@Model.TransactionId</th>
+                <td>@Model.OrderDescription</td>
+                <td>@Model.PaymentId</td>
+                <td>@Model.OrderId</td> @*"@Model.Amount.ToString("#,##0 VNĐ")"*@
+                <td>@Model.PaymentMethod</td>
+                <td>
+                    @Model.CreatedDate.ToString()
+                </td>
+            </tr>
+    </tbody>
+</table>

@@ -1,0 +1,240 @@
+﻿@model IEnumerable<ProductDto>
+@inject IConfiguration Configuration
+
+@{
+    var backendApiImagePath = Configuration.GetValue<string>("ShoppingStoreAPIImagePath");
+    ViewData["Title"] = @ViewBag.Keyword;
+    var titlePage = "";
+    var isHaveSearchKeyword = false;
+    if (@ViewBag.Keyword != "")
+    {
+        titlePage = @ViewBag.Keyword;
+        isHaveSearchKeyword = true;
+    }
+    else { titlePage = "Features Items"; }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-sm-3">
+    <partial name="_SidebarPartial" />
+</div>
+
+<style>
+    .product-image-wrapper {
+        height: 480px;
+    }
+
+        .product-image-wrapper .productinfo p {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            padding: 0 10px;
+        }
+</style>
+
+<div class="col-sm-9 padding-right">
+    @if (@ViewBag.Pager.TotalItemCount == 0 || @ViewBag.Pager.CurrentPage > @ViewBag.Pager.TotalPageCount)
+    {
+        <h2>No Product Found!</h2>
+    }
+    else
+    {
+        <partial name="_FilterProductsPartial" />
+        <div class="features_items">
+            <!--features_items-->
+            <h2 class="title text-center">@titlePage</h2>
+            @foreach (var item in Model)
+            {
+                <div class="col-sm-4">
+                    <div style="position: absolute">
+                    <div class="product-image-wrapper">
+                        <div class="single-products">
+                            <div class="productinfo text-center">
+                                <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id">
+                                    @* <img src="@("https://localhost:7264/media/products/" + item.Image)" alt="@item.Name" height="210px" /> *@
+                                    <img src="@(backendApiImagePath + item.Image)" alt="@item.Name" height="210px" />
+                                    <h2>@item.Price $</h2>
+                                    <p>@item.Name</p>
+                                    <p>Category: @item.Category?.Name</p>
+                                    <p>Brand: @item.Brand?.Name</p>
+                                </a>
+                                @if (item.Quantity > 0)
+                                {
+                                    <a class="btn btn-default add-to-cart" asp-action="Add" asp-controller="Cart" asp-route-id="@item.Id"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                    @* <button class="btn btn-default add-to-cart" data-product-id="@item.Id"><i class="fa fa-shopping-cart"></i>Add to Cart</button> *@
+                                }
+                                else
+                                {
+                                    <a class="btn btn-default add-to-cart" style="opacity: 0.5;pointer-events: none;cursor: default;"><i class="fa fa-shopping-cart"></i>Sold out</a>
+                                }
+                            </div>
+                        </div>
+                        <div class="choose" style="position:absolute; bottom:0; left:0; right:0">
+                            <ul class="nav nav-pills nav-justified">
+                                @if (User.Identity?.IsAuthenticated ?? false)
+                                {
+                                    @* javascript:void(0); *@
+                                    <li><a href="javascript:void(0);" class="add-btn-wishlist" data-product-id="@item.Id"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+                                    <li><a href="javascript:void(0);" class="add-btn-compare" data-product-id="@item.Id"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="/Home/RedirectAuthorizePage"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+                                    <li><a href="/Home/RedirectAuthorizePage"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!--features_items-->
+        <partial name="_PagingPartial" model="@ViewBag.Pager" />
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // $(document).ready(function () {
+        //     $('.add-to-cart').click(function () {
+        //         var Id = $(this).data()["productId"];
+
+        //         // console.log(Id);
+        //         $.ajax({
+        //             type: "POST",
+        //             url: "@Url.Action("Add", "Cart")",
+        //             data: {Id: Id},
+
+        //             success: function (result) {
+        //                 if (result) {
+        //                     Swal.fire("Add to cart successfully");
+        //                 }
+        //             }
+        //         })
+
+        // Test
+        // fetch(`https://localhost:7264/api/products/productByBrandSlug?slug=apple`)
+        //     .then(response => response.json())
+        //     .then(data => console.log(data))
+        //     .catch(error => console.log({error}));
+        //     })
+        // })
+        $(document).ready(function () {
+            $(function () {
+                $('#pagination-nav').pagination({
+                    items: @ViewBag.Pager.TotalItemCount,
+                    itemsOnPage: @ViewBag.Pager.PageSize,
+                    currentPage: @ViewBag.Pager.CurrentPage,
+                    cssStyle: 'pagination',
+                    useAnchors: false,
+                    // prevText: '<span aria-hidden="true">&laquo;</span>',
+                    // nextText: '<span aria-hidden="true">&raquo;</span>',
+                    onPageClick: function (pageNumber, evt) {
+                        // some code
+                        // window.location.href = `/Product/Search?searchTerm=${@ViewBag.Keyword}&pageNumber=${pageNumber}`;
+
+                        var sortType = "@ViewBag.SortBy";
+                        var minPrice = "@ViewBag.Min" != "" ? "&min=@ViewBag.Min" : "";
+                        var maxPrice = "@ViewBag.Max" != "" ? "&max=@ViewBag.Max" : "";
+                        if (sortType != "") {
+                            var nextPageUrl = @isHaveSearchKeyword.ToString().ToLower() ? "@Url.Action("Search", "Product", new { searchTerm = @ViewBag.Keyword })" + "&pageNumber=" + pageNumber
+                                : "@Url.Action("Search", "Product")" + "?pageNumber=" + pageNumber;
+                            return window.location.href = `${nextPageUrl}&sort_by=${sortType}${minPrice}${maxPrice}`;
+                        }
+                        return window.location.href = @isHaveSearchKeyword.ToString().ToLower() ? "@Url.Action("Search", "Product", new { searchTerm = @ViewBag.Keyword })" + "&pageNumber=" + pageNumber
+                            : "@Url.Action("Search", "Product")" + "?pageNumber=" + pageNumber
+                    }
+                });
+            });
+        })
+
+        //Add to wishlist script
+        $(document).ready(function () {
+            $('.add-btn-wishlist').click(function (e) {
+                e.preventDefault();
+                var Id = $(this).data()["productId"];
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddWishlist", "Home")",
+                    data: { Id: Id },
+
+                    success: function (result) {
+                        if (result.success) {
+                            // window.location.href = result.redirectToUrl;
+                            // window.location.reload(); // use window reload wil not automatically go to top page
+                            window.location.href = window.location.href;
+                            // Swal.fire(result.message);
+                        }
+                    },
+                    error: function (result) {
+                        // window.location.href = result.responseJSON.redirectToUrl;
+                        window.location.href = window.location.href;
+                    }
+                })
+            })
+        })
+
+        //Add to compare script
+        // https://stackoverflow.com/questions/18491368/is-there-any-way-to-remove-ajax-headers-set-by-setrequestheader
+        // https://gist.github.com/7kfpun/a8d1326db44aa7857660
+        $(document).ready(function () {
+            $('.add-btn-compare').click(function (e) {
+                e.preventDefault();
+                var Id = $(this).data()["productId"];
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddCompare", "Home")",
+                    data: { Id: Id },
+                    success: function (result) {
+                        // console.log(result);
+                        if (result.success) {
+                            // window.location.href = result.redirectToUrl;
+                            window.location.href = window.location.href;
+                            // Swal.fire(result.message);
+                        }
+                    },
+                    error: function (result) {
+                        // window.location.href = result.responseJSON.redirectToUrl;
+                        window.location.href = window.location.href;
+                    }
+                })
+            })
+        })
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sort_by").on('change', function () {
+                var url = $(this).val();
+                if (url) {
+                    window.location = url;
+                }
+                return false;
+            })
+        })
+    </script>
+
+    <script>
+        // sorted price
+        $('.btn-locgia').on('click', function () {
+            var valuePrice = $('.tooltip-inner').text().split(" ");
+            var valueMin = valuePrice[0];
+            var valueMax = valuePrice[2];
+            var currentUrl = $(this).data("current-url");
+            var currentSortBy = $(this).data("current-sorted-by");
+            var currentSearchTerm = $(this).data("current-search-term");
+            // alert(valueMin);
+            // alert(valueMax);
+            // alert(currentUrl);
+            // alert(currentSortBy);
+            // console.log(currentSearchTerm, typeof currentSearchTerm);
+            var searchTermQueryString = currentSearchTerm != "" ? `searchTerm=${currentSearchTerm}&` : "";
+            // console.log(searchTermQueryString);
+            window.location = currentUrl + `?${searchTermQueryString}pageNumber=1&sort_by=${currentSortBy}&min=${valueMin}&max=${valueMax}`
+        })
+    </script>
+}

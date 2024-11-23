@@ -1,0 +1,8 @@
+﻿@page
+@model Thang.IDP.Pages.User.ActivationCodeSent.IndexModel
+@{
+    <h3 class="panel-title">User Registration</h3>
+    // <h3>You've successfully registered.  Check your e-mail to activate your account. </h3> // old approach send mail directly in User/Register Post Action
+
+    <h3>You've successfully registered. Click <a href="@ViewData["ActivationLink"]">here</a> to activate your account</h3> // Can change click here send mail or automatically send mail after register like old approach a Kevin
+}

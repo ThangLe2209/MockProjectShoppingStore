@@ -1,0 +1,73 @@
+﻿@model IEnumerable<BrandDto>
+@{
+    var currentUrl = Url.ActionContext.HttpContext.Request.Path;
+    string urlFullPart = Context.Request.Path + Context.Request.QueryString;
+    var urlPart = Context.Request;
+    var slugQueryString = Context.Request?.Query["slug"].ToString() ?? "";
+}
+
+<style>
+    .brands-name {
+        position: relative;
+    }
+
+    .brands-navigate {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        cursor: default;
+    }
+
+    .brands-navigate span {
+        padding: 0 2px;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 300ms;
+    }
+
+    .brands-navigate span:hover {
+        color: #fdb45e;
+    }
+</style>
+
+<div class="brands-name">
+@*     @urlFullPart
+    <br/>
+    @currentUrl *@
+    <ul class="nav nav-pills nav-stacked">
+        @foreach (var (item, index) in Model.Select((value, i) => ((value, i))))
+        {
+            <li>
+                <a asp-action="Index" asp-controller="Brand" asp-route-slug="@item.Slug" asp-route-pageNumber="1">
+                    @* <span class="pull-right">(50)</span> *@
+                    @* @if (slugQueryString == @item.Slug.ToLower()) *@
+                    @if (@ViewBag.slugQueryString == @item.Slug.ToLower())
+                    {
+                        <span style="color: #FE980F;">@item.Name</span>
+                    }
+                    else
+                    {
+                        <span>@item.Name</span>
+                    }
+                    @if (@ViewBag.brandMenuId == 1 && index < 3)
+                    {
+                        <span style="margin-left: 24px"><img src="~/images/hot-sale.gif" style="width: 28px; height: 28px" /></span>
+                    }
+                </a>
+            </li>
+        }
+    </ul>
+    @if (@ViewBag.Pager.TotalPageCount > 1)
+    {
+        @*get 4 brand each page and decrease by brand popular (count by order -> product -> brand)*@
+        <div class="brands-navigate">
+            <span onclick="HandleNextBrandMenu(@ViewBag.brandMenuId - 1, @ViewBag.Pager.TotalPageCount, '@ViewBag.slugQueryString')">@Html.Raw("<")</span>
+            <span onclick="HandleNextBrandMenu(@ViewBag.brandMenuId + 1, @ViewBag.Pager.TotalPageCount, '@ViewBag.slugQueryString')">@Html.Raw(">")</span>
+        </div>
+    }
+</div>
+
+
+<script type="text/javascript" src="~/js/BrandAndCategoryHandleNextPage.js" defer></script>
+
+@* Handle script in ViewComponent/Partial View Razor Page: https://stackoverflow.com/questions/43114200/where-should-i-include-a-script-for-a-view-component *@
