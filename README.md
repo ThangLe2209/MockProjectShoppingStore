@@ -78,3 +78,4 @@ Client: https://thang1clientdeploy-1-0.onrender.com/
   "TimeZoneId": "SE Asia Standard Time" // GMT+7. If do not us Windows OS change it to: Asia/Bangkok
 ```
 - Add migration and update Database for BE,IDP. (If any changes)
+- Setup to run 3 projects simultaneously.
