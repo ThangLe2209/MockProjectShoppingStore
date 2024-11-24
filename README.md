@@ -1,6 +1,6 @@
-# Mock Project Shopping Store
+# Mock Project Electronic Devices Store
 
-**Topic**: Electronic store website
+**Topic**: Electronic devices store website
 
 **Technologies used**:
 
@@ -8,11 +8,12 @@
 - API: ASP.Net Core Web API, SQLite, EntityFramework Core, Redis
 - Identity Provider Server: Duende Identity, SQLite, EntityFramework Core, Federation Facebook login
 - Unit Test: XUnit, Moq package, InMemoryDB EFCore
+- For local projects, you can change to any type of db you want. EX: SQLite, MS SQL Server, PostgreSQL,...
 - For deployment hosting (in the deployment branch), I changed SQLite to Postgres SQL, Redis cloud for caching, Cloudinary for hosting image and use Docker, Render.com for deploying.
 
 ## Description
 
-- This is the Electronic website where customers can find and buy electronic products they want online via the internet.
+- This is the Electronic devices store website where customers can find and buy electronic products they want online via the internet.
 - We have 2 roles in the system: Admin and User<br/>
     Admin: they can manage the product, order, user, coupon, slider, statistic, etc in the system by using the admin page.<br/>
     User: they can search, find products, place orders, checkout(COD, Vnpay), view order history, update infor, forget pass, listen to music and so on.
