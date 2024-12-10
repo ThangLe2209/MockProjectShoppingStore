@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using ShoppingStore.API.Services;
 using ShoppingStore.Model;
 using ShoppingStore.Model.Dtos;
+using static Azure.Core.HttpHeader;
 
 namespace ShoppingStore.API.Controllers
 {
@@ -24,11 +25,16 @@ namespace ShoppingStore.API.Controllers
         [HttpGet("getNewGrandTotalByCoupon/{oldGrandTotal}/{couponName}")]
         public async Task<ActionResult<decimal>> getNewGrandTotalByCoupon(decimal oldGrandTotal, string couponName)
         {
-            if (couponName == "VOUCHER50")
+            var couponEntity = await _couponRepository.GetCouponByName(couponName);
+            if (couponEntity == null)
             {
-                return Ok(oldGrandTotal / 2);
+                return NotFound("Coupon Not Found");
             }
-            return Ok();
+            if (couponEntity.DiscountPercent != 0)
+            {
+                return Ok(oldGrandTotal - oldGrandTotal * couponEntity.DiscountPercent);
+            }
+            return Ok(oldGrandTotal - couponEntity.DiscountDecrease);
         }
 
         [HttpGet]
@@ -49,6 +55,25 @@ namespace ShoppingStore.API.Controllers
             }
 
             return Ok(_mapper.Map<CouponDto>(coupon));
+        }
+
+        [HttpGet("GetCouponExistedByName")]
+        public async Task<ActionResult<CouponDto>> GetCouponExistedByName(string couponName)
+        {
+            try
+            {
+                var coupon = await _couponRepository.GetCouponByName(couponName);
+                if (coupon == null)
+                {
+                    return NotFound("Coupon Not Found");
+                }
+
+                return Ok(_mapper.Map<CouponDto>(coupon));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetCouponValidByName")]

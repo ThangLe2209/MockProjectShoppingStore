@@ -42,7 +42,7 @@ namespace ShoppingStore.Client.Controllers
             List<CartItemModel> cartItems = HttpContext.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
             var rawTotal = cartItems.Sum(x => x.Quantity * x.Price);
             
-            using HttpResponseMessage checkResponse = await _externalPaymentService.CheckValidPaymentPrice(rawTotal, Request?.Cookies["CouponName"], Request.Cookies["ShippingPrice"] ?? "", model.Amount.ToString()); // Amount is double here we treat as string so if it's not number then default double is 0 => check BE Condition is "0"
+            using HttpResponseMessage checkResponse = await _externalPaymentService.CheckValidPaymentPrice(rawTotal, Request?.Cookies["CouponName"], Request.Cookies["ShippingPrice"] ?? "", model.Amount.ToString()); // Amount is double here we treat as string so if it's not number then default double is 0 => check BE Condition is "0" (see in BE file)
             if (!checkResponse.IsSuccessStatusCode)
             {
                 var errMsg = JsonConvert.DeserializeObject<dynamic>(checkResponse.Content.ReadAsStringAsync().Result);

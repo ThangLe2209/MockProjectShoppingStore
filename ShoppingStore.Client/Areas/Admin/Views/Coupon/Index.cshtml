@@ -29,9 +29,14 @@
         <span asp-validation-for="Price" class="text-danger" />
         </div> *@
         <div class="form-group">
-            <label>Quantity</label>
-            <input asp-for="Quantity" min="1" type="number" class="form-control" />
-            <span asp-validation-for="Quantity" class="text-danger" />
+            <label>Discount Percentage</label>
+            <input asp-for="DiscountPercent" min="0" max="100" type="number" class="form-control" />
+            <span asp-validation-for="DiscountPercent" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Discount Decrease</label>
+            <input asp-for="DiscountDecrease" type="number" class="form-control" />
+            <span asp-validation-for="DiscountDecrease" class="text-danger" />
         </div>
         <div class="form-group">
             <label>Date Start</label>
@@ -63,6 +68,8 @@
                 <th>Updated Time</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Discount Percentage</th>
+                <th>Discount Decrease</th>
                 <th>Date Started</th>
                 <th>Date Expired</th>
                 <th>Quantity</th>
@@ -78,6 +85,8 @@
                     <td>@coupon.UpdatedDate</td>
                     <td>@coupon.Name</td>
                     <td>@coupon.Description</td>
+                    <td>@(coupon.DiscountPercent != null ? $"{@coupon.DiscountPercent * 100} %" : "")</td>
+                    <td>@(coupon.DiscountDecrease != null ? $"{@coupon.DiscountDecrease} $" : "")</td>
                     <td>@coupon.DateStart.ToString("dd-MM-yyyy")</td>
                     <td>@coupon.DateExpired.ToString("dd-MM-yyyy")</td>
                     <td>@coupon.Quantity</td>

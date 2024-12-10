@@ -18,5 +18,7 @@ namespace ShoppingStore.Model.Dtos
         [Required(ErrorMessage = "Input coupon quantity")]
         public required int Quantity { get; set; }
         public int Status { get; set; } = 1;
+        public decimal DiscountPercent { get; set; }
+        public decimal DiscountDecrease { get; set; }
     }
 }

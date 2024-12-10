@@ -29,8 +29,19 @@ namespace ShoppingStore.Client.Areas.Admin.Controllers
         public async Task<IActionResult> Create(CouponForCreationDto coupon)
         {
             ViewBag.Class = "/Admin/Coupon";
+            if(coupon.DiscountDecrease == 0 && coupon.DiscountPercent == 0)
+            {
+                ModelState.AddModelError(string.Empty, "Input Discout Decrease or Discount Percentage");
+                TempData["error"] = "Input Discout Decrease or Discount Percentage";
+                return RedirectToAction("Index", "Coupon", coupon);
+            }
+            if(coupon.DiscountPercent != 0)
+            {
+                coupon.DiscountPercent = coupon.DiscountPercent / 100;
+            }
             if (ModelState.IsValid)
             {
+                var a = 10;
                 using HttpResponseMessage response = await _couponService.CreateCouponAsync(coupon);
                 //response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode) // can use httpResponseMessage.EnsureSuccessStatusCode(); to treat statusCode as error data response
@@ -99,6 +110,10 @@ namespace ShoppingStore.Client.Areas.Admin.Controllers
             //};
             var jsonParent = JsonConvert.SerializeObject(coupon);
             CouponForEditDto couponEdit = JsonConvert.DeserializeObject<CouponForEditDto>(jsonParent);
+            if (couponEdit.DiscountPercent != 0)
+            {
+                couponEdit.DiscountPercent = couponEdit.DiscountPercent * 100;
+            }
             return View(couponEdit);
         }
 
@@ -107,6 +122,16 @@ namespace ShoppingStore.Client.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(Guid Id, CouponForEditDto coupon)
         {
             ViewBag.Class = "/Admin/Coupon";
+            if (coupon.DiscountDecrease == 0 && coupon.DiscountPercent == 0)
+            {
+                ModelState.AddModelError(string.Empty, "Input Discout Decrease or Discount Percentage");
+                TempData["error"] = "Input Discout Decrease or Discount Percentage";
+                return View(coupon);
+            }
+            if (coupon.DiscountPercent != 0)
+            {
+                coupon.DiscountPercent = coupon.DiscountPercent / 100;
+            }
             if (ModelState.IsValid)
             {
                 //add data to db

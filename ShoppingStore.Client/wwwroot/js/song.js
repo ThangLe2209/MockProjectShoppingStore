@@ -155,7 +155,14 @@ const app = {
             if (_this.isPlaying) {
                 audio.pause();
             } else {
-                audio.play();
+                if (window.opener) {
+                    //alert('inside a pop-up window or target=_blank window');
+                    audio.play();
+                }
+                else {
+                    $js('.elementToFadeInAndOut').classList.add('animation-out');
+                    window.open("https://localhost:7226/", "_blank", "width=600, height=3200");
+                }
             }
         }
 
@@ -306,6 +313,12 @@ const app = {
         // Tải thông tin bài hát đầu tiên vào UI khi chạy ứng dụng
         this.loadCurrentSong();
 
+        // auto playsong when popup
+        if (window.opener) {
+            //alert('inside a pop-up window or target=_blank window');
+            $js('.elementToFadeInAndOut').classList.add('animation-in');
+            audio.play();
+        } 
         // Render playlist
         //this.render();
 

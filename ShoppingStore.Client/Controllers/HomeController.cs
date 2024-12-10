@@ -30,10 +30,11 @@ namespace ShoppingStore.Client.Controllers
         private readonly OrderService _orderService;
         private readonly OrderDetailService _orderDetailService;
         private readonly UserService _userService;
+        private readonly CouponService _couponService;
 
         public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, ProductService productService, SliderService sliderService
             , ContactService contactService, WishlistService wishlistService, CompareService compareService, OrderService orderService
-            , OrderDetailService orderDetailService, UserService userService)
+            , OrderDetailService orderDetailService, UserService userService, CouponService couponService)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
@@ -45,6 +46,7 @@ namespace ShoppingStore.Client.Controllers
             _orderService = orderService;
             _orderDetailService = orderDetailService;
             _userService = userService;
+            _couponService = couponService;
         }
 
         public async Task<IActionResult> Index(int? min, int? max, int pageNumber = 1, string sort_by = "product_newest")
@@ -336,6 +338,17 @@ namespace ShoppingStore.Client.Controllers
             {
                 ViewBag.Class = "/OrdersHistory";
                 var order = await _orderService.GetOrderByOrderCodeAsync(ordercode);
+
+                ViewBag.DiscountPercent = 0;
+                ViewBag.DiscountDecrease = 0;
+                ViewBag.CouponCode = order?.CouponCode;
+                if (order?.CouponCode != null)
+                {
+                    var coupon = await _couponService.GetCouponExistedByNameAsync(order.CouponCode);
+                    ViewBag.DiscountPercent = coupon?.DiscountPercent;
+                    ViewBag.DiscountDecrease = coupon?.DiscountDecrease;
+                }
+
                 ViewBag.orderStatus = order?.Status;
                 // Get Shipping Cost
                 ViewBag.ShippingCost = order?.ShippingCost;

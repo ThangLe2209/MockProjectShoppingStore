@@ -13,5 +13,7 @@ namespace ShoppingStore.Model.Dtos
 		//public required decimal Price { get; set; }
 		public required int Quantity { get; set; }
 		public int Status { get; set; }
-	}
+        public decimal DiscountPercent { get; set; }
+        public decimal DiscountDecrease { get; set; }
+    }
 }

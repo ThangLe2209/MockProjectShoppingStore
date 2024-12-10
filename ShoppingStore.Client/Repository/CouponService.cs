@@ -31,6 +31,9 @@ namespace ShoppingStore.Client.Repository
         public virtual async Task<decimal> GetNewGrandTotalByCoupon(decimal oldGrandTotal, string couponName) =>
 			await _httpClient.GetFromJsonAsync<decimal>($"getNewGrandTotalByCoupon/{oldGrandTotal}/{couponName}");
 
+        public virtual async Task<CouponDto?> GetCouponExistedByNameAsync(string couponName) =>
+			await _httpClient.GetFromJsonAsync<CouponDto>($"GetCouponExistedByName?couponName={couponName}");
+
         public virtual async Task<CouponDto?> GetCouponValidByNameAsync(string couponName) =>
 			await _httpClient.GetFromJsonAsync<CouponDto>($"GetCouponValidByName?couponName={couponName}");
 

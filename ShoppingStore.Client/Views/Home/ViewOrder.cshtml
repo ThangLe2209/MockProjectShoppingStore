@@ -42,13 +42,20 @@
         <tr>
             @* <td colspan="3"></td> *@
             <th scope="row"></th>
-            <td></td>
-            <td></td>
+            <td>
+            </td>
+            <td>
+                <span><span style="font-weight: bold">Coupon Code:</span> @ViewBag.CouponCode</span>
+            </td>
             <td scope="row">
                 <span><span style="font-weight: bold">Shipping Cost:</span> @ViewBag.ShippingCost $</span>
             </td>
             <td>
-                <span><span style="font-weight: bold">Total(Included Shipping Cost - Not applying Coupon):</span><br /> @(@total + ViewBag.ShippingCost) $ </span>
+                <div><span style="font-weight: bold">Total:</span> @(@total) $ </div>
+                <div>
+                    <span style="font-weight: bold">Total(Included Shipping Cost, Coupon):</span>
+                    @(@ViewBag.DiscountPercent != 0 ? (@total - total * @ViewBag.DiscountPercent) + ViewBag.ShippingCost : (@total - @ViewBag.DiscountDecrease) + ViewBag.ShippingCost) $
+                </div>
             </td>
             <td></td>
 

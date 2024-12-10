@@ -13,12 +13,14 @@ namespace ShoppingStore.Client.Areas.Admin.Controllers
         private readonly OrderService _orderService;
         private readonly OrderDetailService _orderDetailService;
         private readonly ExternalPaymentService _externalPaymentService;
+        private readonly CouponService _couponService;
 
-        public OrderController(OrderService orderService, OrderDetailService orderDetailService, ExternalPaymentService externalPaymentService)
+        public OrderController(OrderService orderService, OrderDetailService orderDetailService, ExternalPaymentService externalPaymentService, CouponService couponService)
         {
             _orderService = orderService;
             _orderDetailService = orderDetailService;
             _externalPaymentService = externalPaymentService;
+            _couponService = couponService;
         }
         public async Task<IActionResult> Index()
         {
@@ -32,6 +34,17 @@ namespace ShoppingStore.Client.Areas.Admin.Controllers
             {
                 ViewBag.Class = "/Admin/Order";
                 var order = await _orderService.GetOrderByOrderCodeAsync(ordercode);
+
+                ViewBag.DiscountPercent = 0;
+                ViewBag.DiscountDecrease = 0;
+                ViewBag.CouponCode = order?.CouponCode;
+                if (order?.CouponCode != null)
+                {
+                    var coupon = await _couponService.GetCouponExistedByNameAsync(order.CouponCode);
+                    ViewBag.DiscountPercent = coupon?.DiscountPercent;
+                    ViewBag.DiscountDecrease = coupon?.DiscountDecrease;
+                }
+
                 ViewBag.orderStatus = order?.Status;
                 // Get Shipping Cost
                 ViewBag.ShippingCost = order?.ShippingCost;

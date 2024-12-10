@@ -26,5 +26,7 @@ namespace ShoppingStore.Model
         [Required(ErrorMessage = "Input coupon quantity")]
         public required int Quantity { get; set; }
         public int Status { get; set; } // here is still Nullable = false when add-migration => if want this field or any field become Nullable mark it with the ? after the datatype (Ex. string?, int?).
+        public decimal DiscountPercent { get; set; }
+        public decimal DiscountDecrease { get; set; }
     }
 }

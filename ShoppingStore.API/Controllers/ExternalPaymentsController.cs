@@ -11,11 +11,13 @@ namespace ShoppingStore.API.Controllers
     public class ExternalPaymentsController : Controller
     {
         private readonly IExternalPaymentRepository _externalPaymentRepository;
+        private readonly ICouponRepository _couponRepository;
         private readonly IMapper _mapper;
         const int maxExternalPaymentsPageSize = 4;
-        public ExternalPaymentsController(IExternalPaymentRepository externalPaymentRepository, IMapper mapper)
+        public ExternalPaymentsController(IExternalPaymentRepository externalPaymentRepository, ICouponRepository couponRepository, IMapper mapper)
         {
             _externalPaymentRepository = externalPaymentRepository ?? throw new ArgumentNullException(nameof(externalPaymentRepository));
+            _couponRepository = couponRepository ?? throw new ArgumentNullException(nameof(couponRepository));
             this._mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -27,14 +29,25 @@ namespace ShoppingStore.API.Controllers
             {
                 return BadRequest("PaymentAmount not a number");
             }
-
             if (!String.IsNullOrEmpty(couponName))
             {
-                if (couponName == "VOUCHER50")
+                //if (couponName == "VOUCHER50")
+                //{
+                //    var correctAmount = ((rawTotal / 2) + decimal.Parse(shippingPrice)) * 22000;
+                //    return decimal.Parse(paymentAmount) == correctAmount ? Ok() : BadRequest("Wrong amount");
+                //}
+                var couponEntity = await _couponRepository.GetCouponByName(couponName);
+                if (couponEntity == null)
                 {
-                    var correctAmount = ((rawTotal / 2) + decimal.Parse(shippingPrice)) * 22000;
+                    return NotFound("Coupon Not Found");
+                }
+                if (couponEntity.DiscountPercent != 0)
+                {
+                    var correctAmount = ((rawTotal - rawTotal * couponEntity.DiscountPercent) + decimal.Parse(shippingPrice)) * 22000;
                     return decimal.Parse(paymentAmount) == correctAmount ? Ok() : BadRequest("Wrong amount");
                 }
+                var correctAmountDecrease = ((rawTotal - couponEntity.DiscountDecrease) + decimal.Parse(shippingPrice)) * 22000;
+                return decimal.Parse(paymentAmount) == correctAmountDecrease ? Ok() : BadRequest("Wrong amount");
             }
 
             var correctAmountNoCoupon = (rawTotal + decimal.Parse(shippingPrice)) * 22000;
