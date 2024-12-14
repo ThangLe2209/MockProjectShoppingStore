@@ -4,7 +4,7 @@
 
 **Technologies used**:
 
-- Client: ASP.Net Core MVC, Boostrap, HttpClient, SignalR
+- Client: ASP.Net Core MVC, Bootstrap, HttpClient, SignalR
 - API: ASP.Net Core Web API, SQLite, EntityFramework Core, Redis
 - Identity Provider Server: Duende Identity, SQLite, EntityFramework Core, Federation Facebook login
 - Unit Test: XUnit, Moq package, InMemoryDB EFCore
