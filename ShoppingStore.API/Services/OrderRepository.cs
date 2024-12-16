@@ -60,25 +60,36 @@ namespace ShoppingStore.API.Services
 
         public async Task AddStatisticalByOrder(OrderModel order)
         {
+            // Formular will be not included shipping price only take care coupon Discount
+            dynamic discountPercent = 0;
+            dynamic discountDecrease = 0;
+            if (order?.CouponCode != null)
+            {
+                var coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.Name == order.CouponCode);
+                discountPercent = coupon?.DiscountPercent;
+                discountDecrease = coupon?.DiscountDecrease;
+            }
             // get orderDetail by orderCode
             var detailsOrder = await _context.OrderDetails.Include(od => od.Product).Where(od => od.OrderCode == order.OrderCode)
-                .Select(od => new
-                {
-                    od.Quantity,
-                    od.Product.Price,
-                    od.Product.CapitalPrice,
-                }).ToListAsync();
+            .Select(od => new
+            {
+                od.Quantity,
+                od.Price,
+                od.Product.CapitalPrice,
+            }).ToListAsync();
             // get StatisticalModel by order createdDate
             var statisticalModel = await _context.Statisticals.FirstOrDefaultAsync(s => s.CreatedDate.Date == order.CreatedDate.Date);
 
-            if (statisticalModel != null) {
+            if (statisticalModel != null)
+            {
                 foreach (var orderDetail in detailsOrder)
                 {
                     // if date existed then sum it all
                     statisticalModel.Quantity += 1;
                     statisticalModel.Sold += orderDetail.Quantity;
-                    statisticalModel.Revenue += (Int32) (orderDetail.Quantity * orderDetail.Price);
-                    statisticalModel.Profit += (Int32) (orderDetail.Price - orderDetail.CapitalPrice);
+                    statisticalModel.Revenue += (Int32)(discountPercent != 0 ? (orderDetail.Quantity * orderDetail.Price) - (orderDetail.Quantity * orderDetail.Price) * discountPercent : (orderDetail.Quantity * orderDetail.Price) - discountDecrease);
+                    statisticalModel.Profit += (Int32)(discountPercent != 0 ? (orderDetail.Price * orderDetail.Quantity * (1 - discountPercent)) - (orderDetail.CapitalPrice * orderDetail.Quantity)
+                        : ((orderDetail.Price * orderDetail.Quantity) - discountDecrease) - (orderDetail.CapitalPrice * orderDetail.Quantity));
                 }
                 _context.Update(statisticalModel);
             }
@@ -96,8 +107,9 @@ namespace ShoppingStore.API.Services
                 {
                     newStatisticalModel.Quantity += 1;
                     newStatisticalModel.Sold += orderDetail.Quantity;
-                    newStatisticalModel.Revenue += (Int32)(orderDetail.Quantity * orderDetail.Price);
-                    newStatisticalModel.Profit += (Int32)(orderDetail.Price - orderDetail.CapitalPrice);
+                    newStatisticalModel.Revenue += (Int32)(discountPercent != 0 ? (orderDetail.Quantity * orderDetail.Price) - (orderDetail.Quantity * orderDetail.Price) * discountPercent : (orderDetail.Quantity * orderDetail.Price) - discountDecrease);
+                    newStatisticalModel.Profit += (Int32)(discountPercent != 0 ? (orderDetail.Price * orderDetail.Quantity * (1 - discountPercent)) - (orderDetail.CapitalPrice * orderDetail.Quantity)
+                        : ((orderDetail.Price * orderDetail.Quantity) - discountDecrease) - (orderDetail.CapitalPrice * orderDetail.Quantity));
                 }
                 _context.Add(newStatisticalModel);
 
@@ -108,12 +120,22 @@ namespace ShoppingStore.API.Services
         public async Task RemoveStatisticalByOrder(OrderModel order)
         {
             // này vẫn chưa chuẩn nha còn shippingPrice vs CouponCode nữa thui tạm tha (có orderModel ở trên kìa lấy ra ShippingPrice vs CouponCode để tính toán thêm nha) 
+            // Formular will be not included shipping price only take care coupon Discount
+            dynamic discountPercent = 0;
+            dynamic discountDecrease = 0;
+            if (order?.CouponCode != null)
+            {
+                var coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.Name == order.CouponCode);
+                discountPercent = coupon?.DiscountPercent;
+                discountDecrease = coupon?.DiscountDecrease;
+            }
+
             // get orderDetail by orderCode
             var detailsOrder = await _context.OrderDetails.Include(od => od.Product).Where(od => od.OrderCode == order.OrderCode)
                 .Select(od => new
                 {
                     od.Quantity,
-                    od.Product.Price,
+                    od.Price,
                     od.Product.CapitalPrice,
                 }).ToListAsync();
 
@@ -127,14 +149,15 @@ namespace ShoppingStore.API.Services
                     // if date existed then sum it all
                     statisticalModel.Quantity -= 1;
                     statisticalModel.Sold -= orderDetail.Quantity;
-                    statisticalModel.Revenue -= (Int32)(orderDetail.Quantity * orderDetail.Price);
-                    statisticalModel.Profit -= (Int32)(orderDetail.Price - orderDetail.CapitalPrice);
+                    statisticalModel.Revenue -= (Int32)(discountPercent != 0 ? (orderDetail.Quantity * orderDetail.Price) - (orderDetail.Quantity * orderDetail.Price) * discountPercent : (orderDetail.Quantity * orderDetail.Price) - discountDecrease);
+                    statisticalModel.Profit -= (Int32)(discountPercent != 0 ? (orderDetail.Price * orderDetail.Quantity * (1 - discountPercent)) - (orderDetail.CapitalPrice * orderDetail.Quantity)
+                        : ((orderDetail.Price * orderDetail.Quantity) - discountDecrease) - (orderDetail.CapitalPrice * orderDetail.Quantity));
                 }
                 _context.Update(statisticalModel);
             }
         }
 
-            public async Task<bool> SaveChangesAsync()
+        public async Task<bool> SaveChangesAsync()
         {
             return (await _context.SaveChangesAsync() >= 0);
         }
