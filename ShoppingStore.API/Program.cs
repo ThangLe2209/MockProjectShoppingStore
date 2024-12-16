@@ -63,6 +63,7 @@ builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
 builder.Services.AddScoped<IStatisticProductOrderRepository, StatisticProductOrderRepository>();
 builder.Services.AddScoped<IExternalPaymentRepository, ExternalPaymentRepository>();
+builder.Services.AddScoped<ISongRepository, SongRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

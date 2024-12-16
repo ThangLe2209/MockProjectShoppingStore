@@ -1,0 +1,94 @@
+﻿@model SongForEditDto
+@inject IConfiguration Configuration
+@{
+    var backendApiPath = Configuration.GetValue<string>("ShoppingStoreAPISongPath");
+    var backendApiSongImagePath = $"{backendApiPath}songimages/";
+    var backendApiSongPath = $"{backendApiPath}songs/";
+    ViewData["title"] = "Edit Song";
+}
+
+<h4>Edit Song</h4>
+<div class="col-md-9" style="margin-bottom: 40px">
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label>Status</label>
+            <select asp-for="Status" class="form-control">
+                <option value="1">Show</option>
+                <option value="0">Hidden</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label>Image Url</label>
+            <input asp-for="ImageUrl" class="form-control" />
+            <span asp-validation-for="ImageUrl" class="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label>Image Upload</label>
+            <input asp-for="ImageUpload" class="form-control" onchange="ImgPre(this)" />
+            <span asp-validation-for="ImageUpload" class="text-danger"></span>
+            @* <img id="ImgPreview" src="@(Model.Image)" onerror="this.src='@(Model.Image!="noimage.jpg"?backendApiSliderPath + Model.Image: backendApiSliderPath + "noimage.jpg")';this.onerror=null;" alt="" width="120" /> *@
+            <img id="ImgPreview" src="@(backendApiSongImagePath + Model.Image)" onerror="this.src='@(Model.Image!="noimage.jpg"?Model.Image: backendApiSongImagePath + "noimage.jpg")';this.onerror=null;" alt="" width="120" />
+        </div>
+
+        <div class="form-group">
+            <label>Song Upload</label>
+            <input asp-for="SongUpload" class="form-control" onchange="AudioPre(this)" />
+            <span asp-validation-for="SongUpload" class="text-danger" />
+            <audio id="AudioPreview" controls src="@(backendApiSongPath + Model.Song)"></audio>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary">Update</button>
+        </div>
+    </form>
+    <a asp-action="Index">Back to List Song</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @* <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('Description');
+    </script> *@
+
+    <script>
+        function ImgPre(input) {
+            if (input.files[0]) {
+                var uploadimg = new FileReader();
+                uploadimg.onload = function (displayimg) {
+                    $("#ImgPreview").attr('src', displayimg.target.result);
+                }
+                uploadimg.readAsDataURL(input.files[0]);
+            }
+        }
+        function AudioPre(input) {
+            if (input.files[0]) {
+                var uploadimg = new FileReader();
+                uploadimg.onload = function (displayimg) {
+                    $("#AudioPreview").attr('src', displayimg.target.result);
+                }
+                uploadimg.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
+
+

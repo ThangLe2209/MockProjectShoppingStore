@@ -25,6 +25,7 @@ namespace ShoppingStore.API.DbContexts
         public DbSet<StatisticalProductOrderModel> StatisticalProductOrders { get; set; }
         //public DbSet<MomoInfoModel> MomoInfos { get; set; }
         public DbSet<VnpayModel> VnpayInfos { get; set; }
+        public DbSet<SongModel> Songs { get; set; }
 
 
         public ShoppingStoreContext(DbContextOptions<ShoppingStoreContext> options) : base(options) { } // to use ConnectionString register in Container(Program.js)

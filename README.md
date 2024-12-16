@@ -66,6 +66,7 @@ Client: https://thang1clientdeploy-1-0.onrender.com/
   "ShoppingStoreAPIImagePath": "https://localhost:7045/media/products/",
   "ShoppingStoreAPISliderPath": "https://localhost:7045/media/sliders/",
   "ShoppingStoreAPILogoPath": "https://localhost:7045/media/logo/",
+  "ShoppingStoreAPISongPath": "https://localhost:7045/media/", // here is base api path (songs,songimages folder handle in view page)
   "Vnpay": {
     "TmnCode": "",
     "HashSecret": "",

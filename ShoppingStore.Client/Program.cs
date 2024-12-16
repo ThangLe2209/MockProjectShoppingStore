@@ -48,6 +48,7 @@ builder.Services.AddHttpClient<CouponService>().AddUserAccessTokenHandler();
 builder.Services.AddHttpClient<StatisticService>().AddUserAccessTokenHandler();
 builder.Services.AddHttpClient<StatisticProductOrderService>().AddUserAccessTokenHandler();
 builder.Services.AddHttpClient<ExternalPaymentService>().AddUserAccessTokenHandler();
+builder.Services.AddHttpClient<SongService>().AddUserAccessTokenHandler();
 
 // IDP HttpClient
 builder.Services.AddHttpClient("IDPClient", client => // add client Idp to revoke reference token in AuthenticationController.cs

@@ -37,74 +37,75 @@ const app = {
     isRandom: false,
     isRepeat: false,
     config: JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY)) || {},
-    songs: [
-        {
-            name: 'Song',
-            singer: 'NightCore',
-            path: './songs/song1.mp3',
-            img: './images/song/song1.jpg',
-        },
-        {
-            name: 'Song1',
-            singer: 'NightCore1',
-            path: './songs/song2.mp3',
-            img: './images/song/song2.jpg',
-        },
-        {
-            name: 'Song2',
-            singer: 'NightCore2',
-            path: './songs/song3.mp3',
-            img: './images/song/song3.jpg',
-        },
-        {
-            name: 'Song3',
-            singer: 'NightCore3',
-            path: './songs/song4.mp3',
-            img: './images/song/song4.jpg',
-        },
-        {
-            name: 'Song4',
-            singer: 'NightCore4',
-            path: './songs/song5.mp3',
-            img: './images/song/song5.jpg',
-        },
-        {
-            name: 'Song5',
-            singer: 'NightCore5',
-            path: './songs/song6.mp3',
-            img: './images/song/song6.jpg',
-        },
-        {
-            name: 'Song6',
-            singer: 'NightCore6',
-            path: './songs/song7.mp3',
-            img: './images/song/song7.jpg',
-        },
-        {
-            name: 'Song7',
-            singer: 'NightCore7',
-            path: './songs/song8.mp3',
-            img: './images/song/song8.jpg',
-        },
-        {
-            name: 'Song8',
-            singer: 'NightCore8',
-            path: './songs/song9.mp3',
-            img: './images/song/song9.jpg',
-        },
-        {
-            name: 'Song9',
-            singer: 'NightCore9',
-            path: './songs/song10.mp3',
-            img: './images/song/song10.jpg',
-        },
-        {
-            name: 'Song10',
-            singer: 'NightCore10',
-            path: './songs/song11.mp3',
-            img: './images/song/song11.jpg',
-        },
-    ],
+    //songs: [
+    //    {
+    //        name: 'Song',
+    //        singer: 'NightCore',
+    //        path: './songs/song12.mp4',
+    //        img: './images/song/song1.jpg',
+    //    },
+    //    {
+    //        name: 'Song1',
+    //        singer: 'NightCore1',
+    //        path: './songs/song2.mp3',
+    //        img: './images/song/song2.jpg',
+    //    },
+    //    {
+    //        name: 'Song2',
+    //        singer: 'NightCore2',
+    //        path: './songs/song3.mp3',
+    //        img: './images/song/song3.jpg',
+    //    },
+    //    {
+    //        name: 'Song3',
+    //        singer: 'NightCore3',
+    //        path: './songs/song4.mp3',
+    //        img: './images/song/song4.jpg',
+    //    },
+    //    {
+    //        name: 'Song4',
+    //        singer: 'NightCore4',
+    //        path: './songs/song5.mp3',
+    //        img: './images/song/song5.jpg',
+    //    },
+    //    {
+    //        name: 'Song5',
+    //        singer: 'NightCore5',
+    //        path: './songs/song6.mp3',
+    //        img: './images/song/song6.jpg',
+    //    },
+    //    {
+    //        name: 'Song6',
+    //        singer: 'NightCore6',
+    //        path: './songs/song7.mp3',
+    //        img: './images/song/song7.jpg',
+    //    },
+    //    {
+    //        name: 'Song7',
+    //        singer: 'NightCore7',
+    //        path: './songs/song8.mp3',
+    //        img: './images/song/song8.jpg',
+    //    },
+    //    {
+    //        name: 'Song8',
+    //        singer: 'NightCore8',
+    //        path: './songs/song9.mp3',
+    //        img: './images/song/song9.jpg',
+    //    },
+    //    {
+    //        name: 'Song9',
+    //        singer: 'NightCore9',
+    //        path: './songs/song10.mp3',
+    //        img: './images/song/song10.jpg',
+    //    },
+    //    {
+    //        name: 'Song10',
+    //        singer: 'NightCore10',
+    //        path: './songs/song11.mp3',
+    //        img: './images/song/song11.jpg',
+    //    },
+    //],
+    songs: [],
     setConfig(key, value) {
         this.config[key] = value;
         localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(this.config));
@@ -210,32 +211,50 @@ const app = {
 
         // Khi next song
         nextBtn.onclick = function () {
-            // $(`.songItem${_this.currentIndex}`).classList.remove('active');
-            //$js(`[data-index='${_this.currentIndex}']`).classList.remove('active');
             if (_this.isRandom) {
                 _this.playRandomSong();
             }
             else {
                 _this.nextSong();
             }
-            // $(`.songItem${_this.currentIndex}`).classList.add('active');
-            //$js(`[data-index='${_this.currentIndex}']`).classList.add('active');
-            audio.play();
-            //_this.scrollToActiveSong();
+
+            if (window.opener) {
+                //alert('inside a pop-up window or target=_blank window');
+                // $(`.songItem${_this.currentIndex}`).classList.remove('active');
+                //$js(`[data-index='${_this.currentIndex}']`).classList.remove('active');
+
+                // $(`.songItem${_this.currentIndex}`).classList.add('active');
+                //$js(`[data-index='${_this.currentIndex}']`).classList.add('active');
+                audio.play();
+                //_this.scrollToActiveSong();
+            }
+            else {
+                _this.setConfig('songNow', _this.currentIndex);
+                $js('.elementToFadeInAndOut').classList.add('animation-out');
+                window.open("https://localhost:7226/", "_blank", "width=600, height=3200");
+            }
         }
 
         // Khi prev song
         prevBtn.onclick = function () {
-            //$js(`.songItem${_this.currentIndex}`).classList.remove('active');
             if (_this.isRandom) {
                 _this.playRandomSong();
             }
             else {
                 _this.prevSong();
             }
-            //$js(`.songItem${_this.currentIndex}`).classList.add('active');
-            audio.play();
-            //_this.scrollToActiveSong();
+            if (window.opener) {
+                //alert('inside a pop-up window or target=_blank window');
+                //$js(`.songItem${_this.currentIndex}`).classList.remove('active');
+                //$js(`.songItem${_this.currentIndex}`).classList.add('active');
+                audio.play();
+                //_this.scrollToActiveSong();
+            }
+            else {
+                _this.setConfig('songNow', _this.currentIndex);
+                $js('.elementToFadeInAndOut').classList.add('animation-out');
+                window.open("https://localhost:7226/", "_blank", "width=600, height=3200");
+            }
         }
 
         // Xử lí bật/ tắt random song
@@ -272,11 +291,14 @@ const app = {
         cdThumb.style.backgroundImage = `url(${this.currentSong.img})`;
         audio.src = this.currentSong.path;
     },
-    loadConfig() {
+    loadConfig(songList) {
         // Object.assign(this, this.config);
         this.isRandom = this.config.isRandom || false;
         this.isRepeat = this.config.isRepeat || false;
         this.currentIndex = this.config.songNow || 0;
+        if (this.config.songNow >= songList.length) this.currentIndex = 0;
+        this.songs = songList;
+        //console.log(songList, this.config.songNow, songList.length);
     },
     nextSong: function () {
         this.currentIndex++;
@@ -293,6 +315,7 @@ const app = {
         this.loadCurrentSong();
     },
     playRandomSong: function () {
+        if (this.songs.length === 1) return this.loadCurrentSong();
         let newIndex;
         do {
             newIndex = Math.floor(Math.random() * this.songs.length);
@@ -300,9 +323,10 @@ const app = {
         this.currentIndex = newIndex;
         this.loadCurrentSong();
     },
-    start: function () {
+    start: function (songList) {
+
         // Gán cấu hình từ config vào ứng dụng(Object)
-        this.loadConfig();
+        this.loadConfig(songList);
 
         // Định nghĩa các thuộc tính cho object
         this.defineProperties();
@@ -329,7 +353,36 @@ const app = {
     }
 };
 
-app.start();
+async function getSongs() {
+    const url = "https://localhost:7045/api/songs/";
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        let songList = await response.json();
+        songList = songList.reverse().map(song => {
+            let songImage = song.image;
+            if (!songImage.includes("http")) {
+                songImage = `https://localhost:7045/media/songimages/${song.image}`
+            }
+            return {
+                name: song.name,
+                singer: song.name,
+                path: `https://localhost:7045/media/songs/${song.song}`,
+                img: songImage,
+            };
+        });
+        //console.log(songList)
+
+        app.start(songList);
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+getSongs();
 
 if ((window.location.origin + "/" === window.location.href)) {
     // Index (home) page

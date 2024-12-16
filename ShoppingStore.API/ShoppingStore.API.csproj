@@ -27,4 +27,9 @@
     <ProjectReference Include="..\ShoppingStore.Model\ShoppingStore.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\media\songimages\" />
+    <Folder Include="wwwroot\media\songs\" />
+  </ItemGroup>
+
 </Project>
