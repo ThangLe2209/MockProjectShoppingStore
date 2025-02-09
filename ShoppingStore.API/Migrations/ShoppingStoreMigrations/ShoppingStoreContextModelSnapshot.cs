@@ -49,7 +49,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands", (string)null);
+                    b.ToTable("Brands");
 
                     b.HasData(
                         new
@@ -101,7 +101,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -149,7 +149,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("Compares", (string)null);
+                    b.ToTable("Compares");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.ContactModel", b =>
@@ -189,7 +189,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts", (string)null);
+                    b.ToTable("Contacts");
 
                     b.HasData(
                         new
@@ -240,7 +240,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.OrderDetails", b =>
@@ -276,7 +276,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.OrderModel", b =>
@@ -313,7 +313,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.ProductModel", b =>
@@ -366,7 +366,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
@@ -425,7 +425,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductQuantites", (string)null);
+                    b.ToTable("ProductQuantites");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.RatingModel", b =>
@@ -463,7 +463,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.ShippingModel", b =>
@@ -495,7 +495,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shippings", (string)null);
+                    b.ToTable("Shippings");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.SliderModel", b =>
@@ -526,7 +526,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sliders", (string)null);
+                    b.ToTable("Sliders");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.StatisticalModel", b =>
@@ -555,7 +555,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statisticals", (string)null);
+                    b.ToTable("Statisticals");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.StatisticalProductOrderModel", b =>
@@ -597,7 +597,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("StatisticalProductOrders", (string)null);
+                    b.ToTable("StatisticalProductOrders");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.VnpayModel", b =>
@@ -634,7 +634,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VnpayInfos", (string)null);
+                    b.ToTable("VnpayInfos");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.WishlistModel", b =>
@@ -660,7 +660,7 @@ namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("Wishlists", (string)null);
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("ShoppingStore.Model.CompareModel", b =>

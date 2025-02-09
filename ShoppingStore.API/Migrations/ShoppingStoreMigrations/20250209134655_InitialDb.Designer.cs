@@ -12,7 +12,7 @@ using ShoppingStore.API.DbContexts;
 namespace ShoppingStore.API.Migrations.ShoppingStoreMigrations
 {
     [DbContext(typeof(ShoppingStoreContext))]
-    [Migration("20241122133521_InitialDb")]
+    [Migration("20250209134655_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />

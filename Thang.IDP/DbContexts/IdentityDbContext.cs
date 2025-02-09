@@ -35,18 +35,18 @@ namespace Thang.IDP.DbContexts
                 {
                     Id = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
                     //Password = "password",
-                    Password = "AQAAAAIAAYagAAAAEIGgD0IAkW+5XFBUko8X0PnlkVWcWfaJv2mYU2mACHEZ5ilrceWrxHYBreWHKwRfYw==",
+                    Password = "AQAAAAIAAYagAAAAEA2UtwPl2ClVXS2GxZAimtkI1J9LDURK7V5VUi/jjwSl3DA7ILndLMPYR5JxVKJDxQ==", // 123456
                     Subject = "d860efca-22d9-47fd-8249-791ba61b07c7",
                     UserName = "David",
                     Email = "david@someprovider.com",
                     Active = true,
-                    UserRoleId = new Guid("1069eee8-509a-46f9-9800-da3d0e12d560")
+                    UserRoleId = new Guid("d65cf2bd-3840-41d3-af42-f7ff1a7122ef")
                 },
                 new User()
                 {
                     Id = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                     //Password = "password",
-                    Password = "AQAAAAIAAYagAAAAEIGgD0IAkW+5XFBUko8X0PnlkVWcWfaJv2mYU2mACHEZ5ilrceWrxHYBreWHKwRfYw==",
+                    Password = "AQAAAAIAAYagAAAAEA2UtwPl2ClVXS2GxZAimtkI1J9LDURK7V5VUi/jjwSl3DA7ILndLMPYR5JxVKJDxQ==",
                     Subject = "b7539694-97e7-4dfe-84da-b4256e1ff5c7",
                     UserName = "Emma",
                     Email = "emma@someprovider.com",
@@ -88,7 +88,7 @@ namespace Thang.IDP.DbContexts
                  Id = Guid.NewGuid(),
                  UserId = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
                  Type = "role",
-                 Value = "FreeUser"
+                 Value = "Admin"
              },
              new UserClaim()
              {
@@ -136,6 +136,11 @@ namespace Thang.IDP.DbContexts
              {
                  Id = new Guid("d7ab6668-2af4-4ea4-a93b-3d96dc475d8e"),
                  Value = "PayingUser"
+             },
+             new UserClaim()
+             {
+                 Id = new Guid("d65cf2bd-3840-41d3-af42-f7ff1a7122ef"),
+                 Value = "Admin"
              });
         }
 

@@ -2,25 +2,22 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Thang.IDP.DbContexts;
 
 #nullable disable
 
-namespace Thang.IDP.Migrations.ShoppingStoreMigrations
+namespace Thang.IDP.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20241122132912_InitialDb")]
-    partial class InitialDb
+    partial class IdentityDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -83,21 +80,21 @@ namespace Thang.IDP.Migrations.ShoppingStoreMigrations
                         {
                             Id = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
                             Active = true,
-                            ConcurrencyStamp = "c938d852-786f-438d-b1be-416c051638ea",
+                            ConcurrencyStamp = "8abe4c23-7894-450a-9eaf-25c4558dc8b3",
                             Email = "david@someprovider.com",
-                            Password = "AQAAAAIAAYagAAAAEIGgD0IAkW+5XFBUko8X0PnlkVWcWfaJv2mYU2mACHEZ5ilrceWrxHYBreWHKwRfYw==",
+                            Password = "AQAAAAIAAYagAAAAEA2UtwPl2ClVXS2GxZAimtkI1J9LDURK7V5VUi/jjwSl3DA7ILndLMPYR5JxVKJDxQ==",
                             SecurityCodeExpirationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Subject = "d860efca-22d9-47fd-8249-791ba61b07c7",
                             UserName = "David",
-                            UserRoleId = new Guid("1069eee8-509a-46f9-9800-da3d0e12d560")
+                            UserRoleId = new Guid("d65cf2bd-3840-41d3-af42-f7ff1a7122ef")
                         },
                         new
                         {
                             Id = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                             Active = true,
-                            ConcurrencyStamp = "ded9afb8-b212-4dbe-a4b8-1ae92eed589e",
+                            ConcurrencyStamp = "7d1c0040-a124-4eb1-84bf-df6f5f118863",
                             Email = "emma@someprovider.com",
-                            Password = "AQAAAAIAAYagAAAAEIGgD0IAkW+5XFBUko8X0PnlkVWcWfaJv2mYU2mACHEZ5ilrceWrxHYBreWHKwRfYw==",
+                            Password = "AQAAAAIAAYagAAAAEA2UtwPl2ClVXS2GxZAimtkI1J9LDURK7V5VUi/jjwSl3DA7ILndLMPYR5JxVKJDxQ==",
                             SecurityCodeExpirationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Subject = "b7539694-97e7-4dfe-84da-b4256e1ff5c7",
                             UserName = "Emma",
@@ -138,80 +135,80 @@ namespace Thang.IDP.Migrations.ShoppingStoreMigrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("054b56d3-c3b2-45dc-876a-21b2bf52204e"),
-                            ConcurrencyStamp = "c3b6a4f8-0a7c-4055-8607-4a51fa3204aa",
+                            Id = new Guid("f5b2859b-0893-4952-8188-e2d7f1c31330"),
+                            ConcurrencyStamp = "1606a068-cce0-4fbf-b6dd-87843af68fec",
                             Type = "given_name",
                             UserId = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
                             Value = "David"
                         },
                         new
                         {
-                            Id = new Guid("0fe699ba-5ad0-4ec6-b58f-8d4d11006eb4"),
-                            ConcurrencyStamp = "11a4a4a7-ac6a-4023-896e-0421fd457cc0",
+                            Id = new Guid("65e9a6c4-33e1-44bc-872c-9588fcddb8ec"),
+                            ConcurrencyStamp = "94b4af66-c14f-419d-a1d5-fbd77eb9faee",
                             Type = "email",
                             UserId = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
                             Value = "david@someprovider.com"
                         },
                         new
                         {
-                            Id = new Guid("6396a511-c519-45c3-b8ee-6351f6808777"),
-                            ConcurrencyStamp = "88d903f6-1fdb-40a7-84a3-0377f55e3520",
+                            Id = new Guid("7cde2c6a-1996-4179-bee9-713aae6b5da1"),
+                            ConcurrencyStamp = "a3ab6263-8958-44b3-8bda-5d973f808ecd",
                             Type = "family_name",
                             UserId = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
                             Value = "Flagg"
                         },
                         new
                         {
-                            Id = new Guid("a925fcdd-edb8-4365-92e6-e80f301d2071"),
-                            ConcurrencyStamp = "81e5b1ef-421e-4465-8185-32cd42bdd9f4",
+                            Id = new Guid("badde062-0d2e-4e67-84b2-33cd997acbca"),
+                            ConcurrencyStamp = "9783c759-2486-4e19-bd02-78a64c42c01f",
                             Type = "country",
                             UserId = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
                             Value = "nl"
                         },
                         new
                         {
-                            Id = new Guid("e25aa223-1647-4ed2-8830-35868563d399"),
-                            ConcurrencyStamp = "501515f0-8dde-40f4-a942-c60b1950cfae",
+                            Id = new Guid("9b842d95-8cf8-4374-b8bc-4b99b4e7fd6e"),
+                            ConcurrencyStamp = "af71e890-82b7-4bb2-9d8d-f25af5193899",
                             Type = "role",
                             UserId = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
-                            Value = "FreeUser"
+                            Value = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("99e8bc40-a7b2-4b53-89d7-424bcbfd2f4a"),
-                            ConcurrencyStamp = "f0c5a89a-1a91-4d70-8031-91a31eb836ef",
+                            Id = new Guid("a6017373-fe89-429c-bb36-77399a88c3b7"),
+                            ConcurrencyStamp = "25690a42-d814-483e-9852-d2590f1b1c63",
                             Type = "email",
                             UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                             Value = "emma@someprovider.com"
                         },
                         new
                         {
-                            Id = new Guid("bbb10050-87f4-4b82-a317-214faace6dc0"),
-                            ConcurrencyStamp = "48b4c106-c44f-489a-be76-26bbfabcdf26",
+                            Id = new Guid("8095faee-0fdb-47f4-86c6-0ae03cc946f4"),
+                            ConcurrencyStamp = "de85dc9d-e66b-45e5-a1e6-0c24d9782855",
                             Type = "given_name",
                             UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                             Value = "Emma"
                         },
                         new
                         {
-                            Id = new Guid("1487fd71-1dc6-4b80-a695-fe617c93bd62"),
-                            ConcurrencyStamp = "12e9f5b5-bc4f-4c24-9bf9-12726405db93",
+                            Id = new Guid("7f43601b-b696-46f4-ad61-027a45b38484"),
+                            ConcurrencyStamp = "1a66b6ef-9eea-4f0b-8091-888748086634",
                             Type = "family_name",
                             UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                             Value = "Flagg"
                         },
                         new
                         {
-                            Id = new Guid("88a1280c-558a-44e8-bed9-367623e07853"),
-                            ConcurrencyStamp = "aa2dd7ba-05de-46f5-a62b-80ca182be174",
+                            Id = new Guid("5082b6d2-3383-4138-b0bc-5599974b436c"),
+                            ConcurrencyStamp = "8a141208-44e0-4bf4-815b-e7a0fb03887f",
                             Type = "country",
                             UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                             Value = "be"
                         },
                         new
                         {
-                            Id = new Guid("dc4cd85c-cffd-4e4e-a5d4-dd7e23df24d9"),
-                            ConcurrencyStamp = "928587ae-bc2f-4a0f-b6b0-e2f27d3936b3",
+                            Id = new Guid("c158d545-c6df-4747-99d8-71d8ebf36b4d"),
+                            ConcurrencyStamp = "b531abfe-5444-433b-b419-093a611043b0",
                             Type = "role",
                             UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                             Value = "PayingUser"
@@ -273,14 +270,20 @@ namespace Thang.IDP.Migrations.ShoppingStoreMigrations
                         new
                         {
                             Id = new Guid("1069eee8-509a-46f9-9800-da3d0e12d560"),
-                            ConcurrencyStamp = "487dba63-f7d4-4c1b-b54b-88f796b6b1a0",
+                            ConcurrencyStamp = "de940ab0-f1ba-49eb-bfcb-91639a25ee2a",
                             Value = "FreeUser"
                         },
                         new
                         {
                             Id = new Guid("d7ab6668-2af4-4ea4-a93b-3d96dc475d8e"),
-                            ConcurrencyStamp = "f3ceaf7b-60e9-4b21-b9dc-114e56d82b2b",
+                            ConcurrencyStamp = "1c93bbe6-5654-40bf-9854-c9246eb52a94",
                             Value = "PayingUser"
+                        },
+                        new
+                        {
+                            Id = new Guid("d65cf2bd-3840-41d3-af42-f7ff1a7122ef"),
+                            ConcurrencyStamp = "eb53a067-1fbf-470a-8023-b8b67697bc39",
+                            Value = "Admin"
                         });
                 });
 
