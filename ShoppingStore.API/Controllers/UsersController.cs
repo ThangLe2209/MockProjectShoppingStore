@@ -195,7 +195,7 @@ namespace ShoppingStore.API.Controllers
                 return NotFound("User not existed");
             }
 
-            _userRepository.DeleteUserClaim(userId);
+            await _userRepository.DeleteUserClaim(userId);
             _userRepository.DeleteUser(currentUser);
             await _userRepository.SaveChangesAsync();
 

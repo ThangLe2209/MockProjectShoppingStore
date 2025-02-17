@@ -71,7 +71,9 @@ namespace ShoppingStore.Controllers
                     }
                     else
                     {
-                        errorMessageLists.Add("getCouponResponse", new ErrorModel
+                        var a = JsonConvert.DeserializeObject<dynamic>(getCouponResponse.Content.ReadAsStringAsync().Result);
+
+						errorMessageLists.Add("getCouponResponse", new ErrorModel
                         {
                             isSuccess = getCouponResponse.IsSuccessStatusCode
                         ,

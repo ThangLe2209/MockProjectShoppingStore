@@ -185,7 +185,7 @@ namespace ShoppingStore.API.Controllers
             {
 
                 ProductModel currentProduct = await _productRepository.GetProductAsync(productId);
-                var productImagePath = currentProduct.Image;
+                var productImagePath = currentProduct?.Image;
                 if (currentProduct == null)
                 {
                     //_logger.LogInformation($"City with id {cityId} wasn't found when accessing points of interest.");
@@ -195,7 +195,7 @@ namespace ShoppingStore.API.Controllers
 
                 _productRepository.DeleteProduct(currentProduct);
                 await _productRepository.SaveChangesAsync();
-                _productRepository.DeleteProductImage(productImagePath); // leave behind because if can't not delete image success still fine but when delete product catch FK key constraint if we move this line to above then image will delete descpite of Product not
+				if (productImagePath != "noimage.jpg")  _productRepository.DeleteProductImage(productImagePath); // leave behind because if can't not delete image success still fine but when delete product catch FK key constraint if we move this line to above then image will delete descpite of Product not
 
                 //_mailService.Send("Point of interest deleted.",
                 //    $"Point of interest {pointOfInterestEntity.Name} with id {pointOfInterestEntity.Id} was deleted.");

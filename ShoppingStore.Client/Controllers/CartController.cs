@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using ShoppingStore.Client.Models.ViewModels;
 using ShoppingStore.Client.Repository;
+using ShoppingStore.Model;
 using ShoppingStore.Model.Dtos;
 using ShoppingStore.Models;
 using System.Net;
@@ -289,9 +290,25 @@ namespace ShoppingStore.Client.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken] // https://stackoverflow.com/questions/14473597/include-antiforgerytoken-in-ajax-post-asp-net-mvc
         public async Task<IActionResult> GetCoupon(string coupon_value, decimal grandTotal)
-        {
-            try
-            {
+		{
+			// Test ErrMsg Only
+			using HttpResponseMessage response = await _couponService.GetCouponValidByNameWithErrorMessageAsync(coupon_value);
+			//response.EnsureSuccessStatusCode();
+			if (response.IsSuccessStatusCode) // can use httpResponseMessage.EnsureSuccessStatusCode(); to treat statusCode as error data response
+			{
+				//var responseContent = await response.Content.ReadAsStringAsync();
+				//Console.WriteLine("UploadFileInModel_WithHttpClientAsync response :" + responseContent);
+				TempData["success"] = "Test successfully";
+			}
+			else
+			{
+				var errMsg = JsonConvert.DeserializeObject<dynamic>(response.Content.ReadAsStringAsync().Result);
+                var b = 10;
+			}
+			// Test ErrMsg Only
+
+			try
+			{
                 var validCoupon = await _couponService.GetCouponValidByNameAsync(coupon_value);
                 decimal newGrandTotalData = await _couponService.GetNewGrandTotalByCoupon(grandTotal, validCoupon.Name);
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OutputCaching;
 using Newtonsoft.Json;
 using ShoppingStore.Client.Repository;
 using ShoppingStore.Model;
@@ -19,6 +20,8 @@ namespace ShoppingStore.Client.Areas.Admin.Controllers
 		{
 			_sliderService = sliderService;
 		}
+
+		[ResponseCache(Duration = 30, NoStore = true)]
 		public async Task<IActionResult> Index()
 		{
 			ViewBag.Class = "/Admin/Slider";

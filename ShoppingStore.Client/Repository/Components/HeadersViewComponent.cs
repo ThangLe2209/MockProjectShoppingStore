@@ -51,12 +51,13 @@ namespace ShoppingStore.Client.Repository.ViewComponents
                     TempData["error"] = "User don't have SubId Claim";
                     return View(totalCount);
                 }
-                if (wishListSessionData == null || isUpdateData == "updateWishlist") // == null mean first time after login and the time after session expired but still login
+				//isUpdateData ko dung nha - luc dau co solution la check status a nhung sau do thi thay lai ko can ma ko nỡ xóa nha
+				if (wishListSessionData == null || isUpdateData == "updateWishlist") // == null mean first time after login and the time after session expired but still login
                 {
                     var wishListData = await _wishlistService.GetWishlistWithProductAndUser(new Guid(userSubId));
                     wishListCount = wishListData.Count(); // This line because SetJson below return null after first time login(this line only run to fix first time login)
-                    HttpContext.Session.SetJson("WishlistData", wishListData);
-                    HttpContext.Session.SetString("IsUpdateData", "notUpdate");
+                    HttpContext.Session.SetJson("WishlistData", wishListData); // first time null because that the website is not re-render eventhough already SetJson success => line above is fix for first time after login
+					HttpContext.Session.SetString("IsUpdateData", "notUpdate");
                     //ViewBag.Test = JsonConvert.SerializeObject(wishListData);
                 }
                 if (compareSessionData == null || isUpdateData == "updateCompare")
